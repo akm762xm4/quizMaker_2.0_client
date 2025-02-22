@@ -1,17 +1,18 @@
 import { api } from "../../app/serverApi";
-import { getToken } from "../../utils/localStorage";
-
-const token = getToken();
 
 const quizApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllQuizzes: builder.query<Quiz[], void>({
-      query: () => ({
-        url: `/quiz/all`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      query: () => "/quiz/all",
+      providesTags: ["quiz"],
+    }),
+
+    deleteQuiz: builder.mutation<void, string | undefined>({
+      query: (quizId: string) => ({
+        url: `/quiz/${quizId}`,
+        method: "DELETE",
       }),
+      invalidatesTags: ["quiz"],
     }),
   }),
 });
@@ -22,9 +23,10 @@ export interface Quiz {
   questions: string[];
   maxTime: number;
   enabled: boolean;
-  class: string;
-  subject: string;
-  createdBy: string;
+  createdBy: {
+    _id: string;
+    username: string;
+  };
 }
 
-export const { useGetAllQuizzesQuery } = quizApi;
+export const { useGetAllQuizzesQuery, useDeleteQuizMutation } = quizApi;

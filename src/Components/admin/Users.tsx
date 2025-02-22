@@ -72,7 +72,7 @@ export const Users = () => {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, search: e.target.value }))
             }
-            className="bg-primary outline-none rounded px-1"
+            className="bg-primary outline-none rounded px-1 placeholder:text-xs"
           />
         </div>
         <div className="flex flex-col px-[20%] gap-2 p-2">

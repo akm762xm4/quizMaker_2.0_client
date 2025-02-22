@@ -4,7 +4,7 @@ import { AdminPage } from "../Components/admin/AdminPage";
 import { Users } from "../Components/admin/Users";
 import { Quizzes as QuizzesAdm } from "../Components/admin/Quizzes";
 import { Quizzes as QuizzesFclty } from "../Components/Faculty/Quizzes";
-// import { UserDetail } from "../features/user/UserDetail";
+import { QuestionBanks } from "../Components/admin/QuestionBanks";
 
 const Routing = () => {
   const location = useLocation();
@@ -16,6 +16,7 @@ const Routing = () => {
       <Route path="/admin/">
         <Route path="" index={true} element={<Users />} />
         <Route path="quizzes" index={true} element={<QuizzesAdm />} />
+        <Route path="qbs" element={<QuestionBanks />} />
 
         {/* <Route path="quizzes" index={true} element={<Users />} /> */}
       </Route>{" "}

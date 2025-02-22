@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Modal } from "../../Components/Modal";
 import { DeleteUserForm } from "./DeleteUserForm";
 import { EditUserForm } from "./EditUserForm";
+import { Badge } from "../../Components/Badge";
 
 interface UserItemProps {
   user: UserI;
@@ -29,7 +30,11 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
         onMouseLeave={() => setIsHovering(false)}
         className="flex flex-row items-center justify-between bg-primary p-2 rounded"
       >
-        <span>{user.username}</span>
+        <span className="flex flex-col items-start gap-1">
+          <span className="text-xl">{user.username}</span>
+          <Badge role={user.role} />
+        </span>
+
         {isHovering && (
           <span className="flex flex-row items-center gap-4">
             <button onClick={() => setIsEditOpen(true)} title="edit">

@@ -9,3 +9,8 @@
   font-weight: 500;
   font-style: normal;
 }
+
+*{
+  margin: 0px;
+  padding: 0px;
+}

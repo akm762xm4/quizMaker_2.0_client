@@ -1,19 +1,15 @@
 import { useState } from "react";
-import { Quiz } from "./quizApi";
-import { Modal } from "../../Components/Modal";
-import { QuizPage } from "./QuizPage";
+import { IQBank } from "./qBankApi";
 import { MdDelete } from "react-icons/md";
+import { Modal } from "../../Components/Modal";
 import { DeleteUserForm } from "../user/DeleteUserForm";
 
-interface QuizItemProps {
-  quiz: Quiz;
+interface QBankItemProps {
+  qBank: IQBank;
 }
-
-export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean | false>(false);
+export const QBankItem: React.FC<QBankItemProps> = ({ qBank }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isHovering, setIsHovering] = useState<boolean | false>(false);
-
   return (
     <>
       <div
@@ -21,14 +17,11 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
         onMouseLeave={() => setIsHovering(false)}
         className="bg-primary p-2 rounded flex flex-row items-center justify-between"
       >
-        <div className="flex flex-col items-start">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-xl font-bold"
-          >
-            {quiz.title}
-          </button>
-          <span className="text-sm">createdBy : {quiz.createdBy.username}</span>
+        <div className="flex flex-col">
+          <span className="text-xl font-bold">{qBank.title}</span>
+          <span className="text-sm">
+            createdBy : {qBank.createdBy.username}
+          </span>
         </div>
         {isHovering && (
           <div className="px-2">
@@ -38,20 +31,13 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
           </div>
         )}
       </div>
-      {isModalOpen && (
-        <Modal
-          title={quiz.title}
-          child={<QuizPage quiz={quiz} />}
-          setIsOpen={setIsModalOpen}
-        />
-      )}
       {isDeleteOpen && (
         <Modal
           title="Delete"
           setIsOpen={setIsDeleteOpen}
           child={
             <DeleteUserForm
-              quiz={quiz}
+              qBank={qBank}
               closeModal={() => setIsDeleteOpen(false)}
             />
           }

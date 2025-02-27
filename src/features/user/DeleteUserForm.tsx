@@ -1,11 +1,13 @@
 import { IQBank, useDeleteQBankMutation } from "../qbank/qBankApi";
 import { Quiz, useDeleteQuizMutation } from "../quiz/quizApi";
+import { Result } from "../result/resultApi";
 import { useDeleteUserMutation, UserI } from "./usersApi";
 
 interface DeleteUserFormProps {
   user?: UserI;
   quiz?: Quiz;
   qBank?: IQBank;
+  result?: Result;
   closeModal: () => void;
 }
 
@@ -13,11 +15,13 @@ export const DeleteUserForm: React.FC<DeleteUserFormProps> = ({
   user,
   quiz,
   qBank,
+  result,
   closeModal,
 }) => {
   const [deleteUser] = useDeleteUserMutation();
   const [deleteQuiz] = useDeleteQuizMutation();
   const [deleteQBank] = useDeleteQBankMutation();
+  // const [deleteResult] = useDeleteQBankMutation();
 
   const handleDelete = async () => {
     if (user) {
@@ -34,6 +38,11 @@ export const DeleteUserForm: React.FC<DeleteUserFormProps> = ({
       return;
     }
 
+    if (result) {
+      closeModal();
+      return;
+    }
+
     await deleteQuiz(quiz?._id)
       .unwrap()
       .then(() => closeModal());
@@ -45,7 +54,10 @@ export const DeleteUserForm: React.FC<DeleteUserFormProps> = ({
         <div className="text-secondary/80">
           Are you sure want to delete{" "}
           <span className="text-secondary font-bold">
-            {user ? user?.username : quiz?.title}
+            {user && user?.username}
+            {quiz && quiz.title}
+            {qBank && qBank.title}
+            {result && "this result"}
           </span>{" "}
           ?
         </div>

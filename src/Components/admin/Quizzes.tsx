@@ -2,6 +2,7 @@ import { TbFilterSearch } from "react-icons/tb";
 import { Quiz, useGetAllQuizzesQuery } from "../../features/quiz/quizApi";
 import { QuizItem } from "../../features/quiz/QuizItem";
 import { useEffect, useState } from "react";
+import { NoResult } from "../NoResult";
 
 export const Quizzes = () => {
   const { data: quizzes } = useGetAllQuizzesQuery();
@@ -17,6 +18,10 @@ export const Quizzes = () => {
 
     setFilteredQuizzes(filtered);
   }, [term, quizzes]);
+
+  if (!quizzes?.length) {
+    return <NoResult />;
+  }
 
   return (
     <div className="flex flex-col h-screen">

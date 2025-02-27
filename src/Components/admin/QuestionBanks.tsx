@@ -5,6 +5,7 @@ import {
 } from "../../features/qbank/qBankApi";
 import { QBankItem } from "../../features/qbank/QBankItem";
 import { TbFilterSearch } from "react-icons/tb";
+import { NoResult } from "../NoResult";
 
 export const QuestionBanks = () => {
   const { data: qBanks } = useGetAllQuestionBanksQuery();
@@ -20,6 +21,10 @@ export const QuestionBanks = () => {
 
     setFilteredQBanks(filtered);
   }, [term, qBanks]);
+
+  if (!qBanks?.length) {
+    return <NoResult />;
+  }
   return (
     <div className="flex flex-col h-screen">
       <div className="p-4 flex  gap-3 bg-primary/20">

@@ -5,6 +5,7 @@ import { TbFilterSearch } from "react-icons/tb";
 import { IoIosAdd } from "react-icons/io";
 import { Modal } from "../Modal";
 import { AddUserForm } from "../../features/user/AddUserForm";
+import { NoResult } from "../NoResult";
 
 export const Users = () => {
   const { data: users } = useGetAllUsersQuery();
@@ -35,6 +36,10 @@ export const Users = () => {
 
     setFilteredUsers(filtered);
   }, [filters, users]);
+
+  if (!users?.length) {
+    return <NoResult />;
+  }
 
   return (
     <>

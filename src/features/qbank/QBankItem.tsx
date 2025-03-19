@@ -1,15 +1,28 @@
 import { useState } from "react";
-import { IQBank } from "./qBankApi";
-import { MdDelete } from "react-icons/md";
+import { IQBank, useDeleteQBankMutation } from "./qBankApi";
+import { MdDelete, MdEditNote } from "react-icons/md";
 import { Modal } from "../../Components/Modal";
-import { DeleteUserForm } from "../user/DeleteUserForm";
+import { DeleteForm } from "../user/DeleteForm";
+import { useNavigate } from "react-router-dom";
+import { getUser } from "../../utils/localStorage";
+import { AddQBankForm } from "./AddQBankForm";
 
 interface QBankItemProps {
   qBank: IQBank;
 }
 export const QBankItem: React.FC<QBankItemProps> = ({ qBank }) => {
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteQBank] = useDeleteQBankMutation();
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean | false>(false);
+  const [isEditOpen, setIsEditOpen] = useState<boolean | false>(false);
   const [isHovering, setIsHovering] = useState<boolean | false>(false);
+  const navigate = useNavigate();
+  const loggedUser = getUser();
+
+  const handleDeleteQBank = async () => {
+    await deleteQBank(qBank?._id)
+      .unwrap()
+      .then(() => setIsDeleteOpen(false));
+  };
   return (
     <>
       <div
@@ -17,27 +30,54 @@ export const QBankItem: React.FC<QBankItemProps> = ({ qBank }) => {
         onMouseLeave={() => setIsHovering(false)}
         className="bg-primary p-2 rounded flex flex-row items-center justify-between"
       >
-        <div className="flex flex-col">
-          <span className="text-xl font-bold">{qBank.title}</span>
+        <div className="flex flex-col items-start">
+          {loggedUser.role === "faculty" ? (
+            <button
+              title="view"
+              onClick={() => navigate(`${qBank._id}`)}
+              className="text-xl font-bold"
+            >
+              {qBank.title}
+            </button>
+          ) : (
+            <span className="text-xl font-bold">{qBank.title}</span>
+          )}
           <span className="text-sm">
-            createdBy : {qBank.createdBy.username}
+            createdBy : {qBank?.createdBy?.username}
           </span>
         </div>
         {isHovering && (
-          <div className="px-2">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsEditOpen(true)} title="edit">
+              <MdEditNote size={24} />
+            </button>
             <button onClick={() => setIsDeleteOpen(true)} title="delete">
               <MdDelete size={24} />
             </button>
           </div>
         )}
       </div>
+      {isEditOpen && (
+        <Modal
+          title="Edit QuestionBank"
+          setIsOpen={setIsEditOpen}
+          child={
+            <AddQBankForm
+              isEdit={true}
+              closeModal={() => setIsEditOpen(false)}
+              qBank={qBank}
+            />
+          }
+        />
+      )}
       {isDeleteOpen && (
         <Modal
           title="Delete"
           setIsOpen={setIsDeleteOpen}
           child={
-            <DeleteUserForm
-              qBank={qBank}
+            <DeleteForm
+              name={qBank.title}
+              deleteHandler={handleDeleteQBank}
               closeModal={() => setIsDeleteOpen(false)}
             />
           }

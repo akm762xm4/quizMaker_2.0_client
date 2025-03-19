@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { getUser, logoutUser } from "../utils/localStorage";
 import { CiLogout } from "react-icons/ci";
-import { adminNavbar, facultyNavbar } from "../utils/navbar";
+import { adminNavbar, facultyNavbar, studentNavbar } from "../utils/navbar";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -11,28 +11,45 @@ export const Navbar = () => {
     navigate("/");
   };
   return (
-    <div className="flex items-center justify-between bg-primary p-3 ">
+    <div className="flex items-center justify-between bg-primary p-3 border-b border-black">
       <span className="font-bold text-2xl">{loggedUser.username}</span>
       <span className="flex divide-x-2 divide-secondary ">
-        {loggedUser.role === "admin"
-          ? adminNavbar.map((item) => (
-              <button
-                onClick={() => navigate(item.path)}
-                className="capitalize hover:text-accent hover:font-bold px-2 transition"
-                key={item.path}
-              >
-                {item.name}
-              </button>
-            ))
-          : facultyNavbar.map((item) => (
-              <button
-                onClick={() => navigate(item.path)}
-                className="capitalize hover:text-accent hover:font-bold px-2 transition"
-                key={item.path}
-              >
-                {item.name}
-              </button>
-            ))}
+        {loggedUser.role === "admin" &&
+          adminNavbar.map((item) => (
+            <button
+              onClick={() => navigate(item.path)}
+              className={`capitalize hover:text-accent hover:font-bold px-2 transition ${
+                location.pathname === item.path && "text-accent"
+              }`}
+              key={item.path}
+            >
+              {item.name}
+            </button>
+          ))}
+        {loggedUser.role === "faculty" &&
+          facultyNavbar.map((item) => (
+            <button
+              onClick={() => navigate(item.path)}
+              className={`capitalize hover:text-accent hover:font-bold px-2 transition ${
+                location.pathname === item.path && "text-accent"
+              }`}
+              key={item.path}
+            >
+              {item.name}
+            </button>
+          ))}
+        {loggedUser.role === "student" &&
+          studentNavbar.map((item) => (
+            <button
+              onClick={() => navigate(item.path)}
+              className={`capitalize hover:text-accent hover:font-bold px-2 transition ${
+                location.pathname === item.path && "text-accent"
+              }`}
+              key={item.path}
+            >
+              {item.name}
+            </button>
+          ))}
       </span>
       <button
         className="hover:bg-accent hover transition rounded p-1"

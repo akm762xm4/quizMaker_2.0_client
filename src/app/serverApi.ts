@@ -35,5 +35,5 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithAuth,
   endpoints: () => ({}),
-  tagTypes: ["user", "quiz", "qBank", "result"],
+  tagTypes: ["user", "quiz", "qBank", "result", "question", "request"],
 });

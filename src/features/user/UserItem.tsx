@@ -1,10 +1,14 @@
 import { toast } from "react-toastify";
 import Toggle from "../../Components/Toggle";
-import { UserI, useToggleUserMutation } from "./usersApi";
+import {
+  useDeleteUserMutation,
+  UserI,
+  useToggleUserMutation,
+} from "./usersApi";
 import { MdEditNote, MdDelete } from "react-icons/md";
 import { useState } from "react";
 import { Modal } from "../../Components/Modal";
-import { DeleteUserForm } from "./DeleteUserForm";
+import { DeleteForm } from "./DeleteForm";
 import { EditUserForm } from "./EditUserForm";
 import { Badge } from "../../Components/Badge";
 
@@ -12,10 +16,12 @@ interface UserItemProps {
   user: UserI;
 }
 export const UserItem: React.FC<UserItemProps> = ({ user }) => {
-  const [isHovering, setIsHovering] = useState(false);
+  const [deleteUser] = useDeleteUserMutation();
   const [toggleUser] = useToggleUserMutation();
+  const [isHovering, setIsHovering] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
   const onToggleChange = async () => {
     await toggleUser(user._id)
       .unwrap()
@@ -23,6 +29,13 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
         toast.success(res.message);
       });
   };
+
+  const deleteUserHandler = async () => {
+    await deleteUser(user?._id)
+      .unwrap()
+      .then(() => setIsDeleteOpen(false));
+  };
+
   return (
     <>
       <div
@@ -49,7 +62,7 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
       </div>
       {isEditOpen && (
         <Modal
-          title="Edit"
+          title="Edit User"
           child={
             <EditUserForm closeModal={() => setIsEditOpen(false)} user={user} />
           }
@@ -58,11 +71,12 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
       )}
       {isDeleteOpen && (
         <Modal
-          title="Delete"
+          title="Delete User"
           child={
-            <DeleteUserForm
-              user={user}
+            <DeleteForm
+              deleteHandler={deleteUserHandler}
               closeModal={() => setIsDeleteOpen(false)}
+              name={user.username}
             />
           }
           setIsOpen={setIsDeleteOpen}

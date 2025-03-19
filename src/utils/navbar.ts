@@ -2,7 +2,7 @@
 
 export const adminNavbar: Navbar[] = [
   {
-    path: "/admin/",
+    path: "/admin",
     name: "users",
   },
   {
@@ -17,11 +17,15 @@ export const adminNavbar: Navbar[] = [
     path: "/admin/results",
     name: "results",
   },
+  {
+    path: "/admin/requests",
+    name: "requests",
+  },
 ];
 
 export const facultyNavbar: Navbar[] = [
   {
-    path: "/faculty/",
+    path: "/faculty",
     name: "quizzes",
   },
   {
@@ -32,6 +36,11 @@ export const facultyNavbar: Navbar[] = [
     path: "/faculty/results",
     name: "results",
   },
+];
+
+export const studentNavbar: Navbar[] = [
+  { path: "/student", name: "quizzes" },
+  { path: "/student/result", name: "results" },
 ];
 
 interface Navbar {

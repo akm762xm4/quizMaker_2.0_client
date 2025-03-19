@@ -4,3 +4,7 @@ export interface ErrorI {
   };
   status: number;
 }
+
+export interface SuccessResponse {
+  message: string;
+}

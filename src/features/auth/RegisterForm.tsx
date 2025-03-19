@@ -18,20 +18,22 @@ export const RegisterForm = () => {
       await signUp(values)
         .unwrap()
         .then((res) => {
-          toast.success(res.message);
-          setToken(res?.user?.token);
-          let role = res?.user?.role;
-          switch (role) {
-            case "admin":
-              navigate("/admin");
-              break;
-            case "faculty":
-              navigate("/faculty");
-              break;
-            default:
-              navigate("/student");
-              break;
+          if (res?.user?.role) {
+            setToken(res?.user?.token);
+            let role = res?.user?.role;
+            switch (role) {
+              case "admin":
+                navigate("/admin");
+                break;
+              case "faculty":
+                navigate("/faculty");
+                break;
+              default:
+                navigate("/student");
+                break;
+            }
           }
+          toast.success(res.message);
         });
     } catch (error) {
       const err = error as ErrorI;

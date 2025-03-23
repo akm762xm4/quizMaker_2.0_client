@@ -29,7 +29,6 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
   const onSubmit = async (data: Partial<QuestionI>) => {
     try {
       await updateQuestion({
-        qBankId: qBankId,
         questionId: question._id,
         patch: data,
       })

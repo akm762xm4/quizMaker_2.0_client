@@ -4,6 +4,8 @@ import { NoResult } from "../NoResult";
 
 export const Results = () => {
   const { data: results } = useGetAllResultsQuery();
+  results && console.log("Results::", results);
+
   if (!results?.length) {
     return <NoResult />;
   }

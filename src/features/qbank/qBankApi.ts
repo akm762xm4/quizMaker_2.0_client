@@ -34,10 +34,10 @@ const qBankApi = api.injectEndpoints({
       }),
       invalidatesTags: ["qBank"],
     }),
-    getQuestions: builder.query<QuestionI, string | undefined>({
-      query: (qBankId) => `qbank/getQuestions/${qBankId}`,
-      providesTags: ["quiz", "question"],
-    }),
+    // getQuestions: builder.query<QuestionI, string | undefined>({
+    //   query: (qBankId) => `qbank/getQuestions/${qBankId}`,
+    //   providesTags: ["quiz", "question"],
+    // }),
     addQuestion: builder.mutation<SuccessResponse, any>({
       query: ({ qBankId, body }) => ({
         url: `/qbank/addQuestion/${qBankId}`,
@@ -54,8 +54,8 @@ const qBankApi = api.injectEndpoints({
       invalidatesTags: ["quiz", "question"],
     }),
     updateQuestion: builder.mutation({
-      query: ({ qBankId, questionId, patch }) => ({
-        url: `/qbank/updateQuestion/${qBankId}/${questionId}`,
+      query: ({ questionId, patch }) => ({
+        url: `/qbank/updateQuestion/${questionId}`,
         method: "PUT",
         body: patch,
       }),
@@ -110,7 +110,7 @@ export const {
   useDeleteQBankMutation,
   useCreateQBankMutation,
   useRenameQBankMutation,
-  useGetQuestionsQuery,
+  // useGetQuestionsQuery,
   useAddQuestionMutation,
   useRemoveQuestionMutation,
   useUpdateQuestionMutation,

@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { ErrorI } from "../../types";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { getUser } from "../../utils/localStorage";
+import { FaPlay } from "react-icons/fa6";
 
 interface QuizItemProps {
   quiz: Quiz;
@@ -77,6 +78,14 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
             </span>
           )}
         </div>
+        {loggedUser.role === "student" && (
+          <button
+            onClick={() => navigate(`/student/${quiz._id}`)}
+            title="attemp"
+          >
+            <FaPlay size={24} />
+          </button>
+        )}
         <div
           className={`relative ${loggedUser.role === "student" && "hidden"}`}
         >

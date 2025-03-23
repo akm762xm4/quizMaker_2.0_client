@@ -11,7 +11,9 @@ export const QuizDetail = () => {
   const { data: quiz, refetch } = useGetQuizByIdQuery(quizId); // Refetch after adding/removing
   const { data: questionBanks } = useGetAllQBanksQuery();
   const [addQuestions] = useAddQuestionsMutation();
-  const [selectedQuestionIds, setSelectedQuestionIds] = useState<string[]>([]);
+  const [selectedQuestions, setSelectedQuestions] = useState<
+    { _id: string; text: string }[]
+  >([]);
   const [expandedBanks, setExpandedBanks] = useState<string[]>([]);
 
   const handleToggleBank = (bankId: string) => {
@@ -22,29 +24,36 @@ export const QuizDetail = () => {
     );
   };
 
-  const handleQuestionSelect = (questionId: string) => {
-    setSelectedQuestionIds((prev) =>
-      prev.includes(questionId)
-        ? prev.filter((id) => id !== questionId)
-        : [...prev, questionId]
-    );
+  const handleQuestionSelect = (questionId: string, questionText: string) => {
+    setSelectedQuestions((prev) => {
+      const isSelected = prev.some((q) => q._id === questionId);
+      if (isSelected) {
+        return prev.filter((q) => q._id !== questionId); // Remove if already selected
+      } else {
+        return [...prev, { _id: questionId, text: questionText }]; // Add if not selected
+      }
+    });
   };
 
   const handleRemoveSelected = (questionId: string) => {
-    setSelectedQuestionIds((prev) => prev.filter((id) => id !== questionId));
+    setSelectedQuestions((prev) => prev.filter((q) => q._id !== questionId));
   };
 
   const handleRemoveAll = () => {
-    setSelectedQuestionIds([]);
+    setSelectedQuestions([]);
   };
 
   const handleAddQuestions = async () => {
-    if (!quizId || selectedQuestionIds.length === 0) return;
+    if (!quizId || selectedQuestions.length === 0) return;
+
+    const questionIds = { questionIds: selectedQuestions.map((q) => q._id) }; // Extract IDs for the backend
 
     try {
-      await addQuestions({ quizId, questionIds: selectedQuestionIds }).unwrap();
+      // console.log("IDS::", questionIds);
+
+      await addQuestions({ quizId, questionIds }).unwrap();
       toast.success("Questions added successfully!");
-      setSelectedQuestionIds([]);
+      setSelectedQuestions([]); // Clear the selected questions
       refetch(); // Refresh quiz data
     } catch (error) {
       toast.error("Failed to add questions.");
@@ -84,8 +93,10 @@ export const QuizDetail = () => {
                       <input
                         title="select"
                         type="checkbox"
-                        checked={selectedQuestionIds.includes(q._id)}
-                        onChange={() => handleQuestionSelect(q._id)}
+                        checked={selectedQuestions.some(
+                          (selected) => selected._id === q._id
+                        )}
+                        onChange={() => handleQuestionSelect(q._id, q.text)} // Pass both _id and text
                       />
                       {q.text}
                     </li>
@@ -103,19 +114,42 @@ export const QuizDetail = () => {
         <h1 className="text-xl font-bold">
           {quiz?.title} - Selected Questions
         </h1>
+
+        {/* Existing Questions in the Quiz */}
         <div className="mt-4">
-          {/* <h2 className="text-lg font-semibold">Newly Selected Questions</h2> */}
-          {selectedQuestionIds.length > 0 ? (
+          <h2 className="text-lg font-semibold">Existing Questions in Quiz</h2>
+          {quiz?.questions?.length ? (
             <ul className="border rounded-lg shadow-md p-2 bg-highlight/40">
-              {selectedQuestionIds.map((id) => (
+              {quiz.questions.map((q) => (
                 <li
-                  key={id}
+                  key={q._id}
                   className="flex justify-between items-center p-3 border-b border-secondary last:border-none"
                 >
-                  <span>Question ID: {id}</span>
+                  <span>{q.text}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-center p-4 text-gray-500">
+              No questions in this quiz yet.
+            </p>
+          )}
+        </div>
+
+        {/* Newly Selected Questions */}
+        <div className="mt-4">
+          <h2 className="text-lg font-semibold">Newly Selected Questions</h2>
+          {selectedQuestions.length > 0 ? (
+            <ul className="border rounded-lg shadow-md p-2 bg-highlight/40">
+              {selectedQuestions.map((q) => (
+                <li
+                  key={q._id}
+                  className="flex justify-between items-center p-3 border-b border-secondary last:border-none"
+                >
+                  <span>{q.text}</span> {/* Display question text */}
                   <button
                     title="remove"
-                    onClick={() => handleRemoveSelected(id)}
+                    onClick={() => handleRemoveSelected(q._id)}
                   >
                     <FiMinusCircle size={22} />
                   </button>
@@ -128,19 +162,20 @@ export const QuizDetail = () => {
             </p>
           )}
         </div>
+
         {/* Buttons */}
         <div className="mt-4 flex gap-2">
           <button
             className="bg-highlight/50 p-2 rounded ml-auto"
             onClick={handleRemoveAll}
-            disabled={selectedQuestionIds.length === 0}
+            disabled={selectedQuestions.length === 0}
           >
             Remove All
           </button>
           <button
             className="bg-accent/80 p-2 rounded"
             onClick={handleAddQuestions}
-            disabled={selectedQuestionIds.length === 0}
+            disabled={selectedQuestions.length === 0}
           >
             Add
           </button>

@@ -51,7 +51,7 @@ const quizApi = api.injectEndpoints({
     addQuestions: builder.mutation({
       query: ({ quizId, questionIds }) => ({
         url: `/quiz/${quizId}/addQuestions`,
-        method: "POST",
+        method: "PATCH",
         body: questionIds,
       }),
       invalidatesTags: ["question", "quiz"],
@@ -59,7 +59,7 @@ const quizApi = api.injectEndpoints({
     removeQuestions: builder.mutation({
       query: ({ quizId, questionIds }) => ({
         url: `/quiz/${quizId}/removeQuestions`,
-        method: "DELETE",
+        method: "PATCH",
         body: questionIds,
       }),
       invalidatesTags: ["question", "quiz"],
@@ -71,9 +71,11 @@ export interface Quiz {
   _id: string;
   title: string;
   questions: {
+    _id: string;
     text: string;
     options: string[];
     correctOption: number;
+    category: string;
   }[];
   maxTime: number;
   enabled: boolean;

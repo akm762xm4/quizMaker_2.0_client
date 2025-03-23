@@ -11,6 +11,7 @@ import { GetQuizzes } from "../Components/student/GetQuizzes";
 import { QuizDetail } from "../features/quiz/QuizDetail";
 import { ViewQuiz } from "../features/quiz/ViewQuiz";
 import { Requests } from "../features/approveRequest/Requests";
+import QuizAttempt from "../Components/student/QuizAttempt";
 
 const Routing = () => {
   const location = useLocation();
@@ -41,6 +42,7 @@ const Routing = () => {
       //student routes
       <Route path="/student/">
         <Route index={true} path="" element={<GetQuizzes />} />
+        <Route path=":quizId" element={<QuizAttempt />} />
       </Route>
       <Route path="*" element={<AdminPage />} />
     </Routes>

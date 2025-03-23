@@ -53,9 +53,9 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
             <button onClick={() => setIsEditOpen(true)} title="edit">
               <MdEditNote size={24} />
             </button>
-            <button onClick={() => setIsDeleteOpen(true)} title="delete">
+            {/* <button onClick={() => setIsDeleteOpen(true)} title="delete">
               <MdDelete size={24} />
-            </button>
+            </button> */}
             <Toggle checked={user.isActive} onChange={onToggleChange} />
           </span>
         )}

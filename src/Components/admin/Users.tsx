@@ -43,7 +43,7 @@ export const Users = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col">
         <div className="p-4 flex  items-center gap-3 bg-primary/20">
           <TbFilterSearch size={24} />
           <label>

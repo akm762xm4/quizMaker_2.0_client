@@ -15,7 +15,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
       ? {
           text: question.text,
           category: question.category,
-          correctOption: question.correctOption, // Convert number to string for radio buttons
+          correctOption: question.correctOption.toString(), // Convert number to string for radio buttons
           op1: question.options[0],
           op2: question.options[1],
           op3: question.options[2],
@@ -65,7 +65,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
               {`option-${index + 1}`}
               <input
                 type="radio"
-                value={index} // Set value as index (0,1,2,3)
+                value={index.toString()} // Convert index to string to match correctOption type
                 {...register("correctOption", { required: true })}
               />
               <input

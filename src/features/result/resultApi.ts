@@ -18,6 +18,17 @@ const resultApi = api.injectEndpoints({
       query: () => "/student/resultAdm",
       providesTags: ["result"],
     }),
+    getStudentResults: builder.query<Result[], void>({
+      query: () => "/student/result",
+      providesTags: ["result"],
+    }),
+    deleteResult: builder.mutation({
+      query: (id) => ({
+        url: `/student/result/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["result"],
+    }),
   }),
 });
 
@@ -58,4 +69,6 @@ export const {
   useGetAvailableQuizzesQuery,
   useGetAllResultsQuery,
   useAttemptQuizMutation,
+  useGetStudentResultsQuery,
+  useDeleteResultMutation,
 } = resultApi;

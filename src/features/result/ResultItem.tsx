@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Result } from "./resultApi";
+import { Result, useDeleteResultMutation } from "./resultApi";
 import { MdDelete } from "react-icons/md";
 import { Modal } from "../../Components/Modal";
 import { DeleteForm } from "../user/DeleteForm";
@@ -9,12 +9,15 @@ interface ResultItemProps {
   result: Result;
 }
 export const ResultItem: React.FC<ResultItemProps> = ({ result }) => {
+  const [deleteResult] = useDeleteResultMutation();
   const [isModalOpen, setIsModalOpen] = useState<boolean | false>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isHovering, setIsHovering] = useState<boolean | false>(false);
 
   const deleteResultHandler = async () => {
-    setIsDeleteOpen(false);
+    await deleteResult(result._id)
+      .unwrap()
+      .then(() => setIsDeleteOpen(false));
   };
   return (
     <>
@@ -47,7 +50,7 @@ export const ResultItem: React.FC<ResultItemProps> = ({ result }) => {
       )}
       {isDeleteOpen && (
         <Modal
-          title="Delete"
+          title="Delete Result"
           setIsOpen={setIsDeleteOpen}
           child={
             <DeleteForm

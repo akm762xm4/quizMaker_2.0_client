@@ -44,7 +44,7 @@ const qBankApi = api.injectEndpoints({
         body,
         method: "POST",
       }),
-      invalidatesTags: ["quiz", "question"],
+      invalidatesTags: ["qBank", "quiz", "question"],
     }),
     removeQuestion: builder.mutation({
       query: ({ qBankId, questionId }) => ({
@@ -100,7 +100,7 @@ export interface AddQuestionI {
   op2: string;
   op3: string;
   op4: string;
-  correctOption: number;
+  correctOption: string;
   category: string;
 }
 

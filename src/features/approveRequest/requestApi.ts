@@ -12,7 +12,7 @@ const requestApi = api.injectEndpoints({
         body,
         method: "PATCH",
       }),
-      invalidatesTags: ["request"],
+      invalidatesTags: ["request", "user"],
     }),
   }),
 });

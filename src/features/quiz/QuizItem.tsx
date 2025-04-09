@@ -104,14 +104,6 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
               id="context-menu"
               className="absolute bg-white/50 backdrop-blur-xl divide-y border shadow-xl shadow-primary/20 rounded-md z-50 flex flex-col w-max  "
             >
-              <button
-                className={`p-2 hover:text-accent ${
-                  loggedUser.role === "admin" && "hidden"
-                }`}
-                onClick={() => navigate(`/faculty/view/${quiz._id}`)}
-              >
-                View
-              </button>
               <span className="p-2 flex items-center justify-around ">
                 <span>Toggle</span>
                 <Toggle checked={quiz.enabled} onChange={handleToggleQuiz} />

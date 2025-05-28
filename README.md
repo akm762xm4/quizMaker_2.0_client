@@ -1,50 +1,90 @@
-# React + TypeScript + Vite
+# Quiz Maker 2.0
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application for creating, managing, and taking quizzes. Built with React, TypeScript, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User authentication and authorization
+- Create and manage quiz questions
+- Organize questions by categories
+- Multiple choice questions with 4 options
+- Clean and intuitive user interface
+- Responsive design
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React
+- TypeScript
+- Tailwind CSS
+- React Hook Form
+- React Router
+- Axios for API calls
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/quizMaker_2.0_client.git
+cd quizMaker_2.0_client
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
 ```
+
+3. Start the development server
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+The application will be available at `http://localhost:5173`
+
+## Testing the Application
+
+You can test the deployed application using the following credentials:
+
+- Username: `jagin`
+- Password: `123`
+
+## Project Structure
+
+```
+src/
+├── features/
+│   └── qbank/
+│       ├── QuestionForm.tsx    # Form component for adding/editing questions
+│       └── qBankApi.ts         # API integration for questions
+├── components/                 # Reusable components
+├── pages/                     # Page components
+└── App.tsx                    # Main application component
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- React Hook Form for form management
+- Tailwind CSS for styling
+- All contributors who have helped shape this project

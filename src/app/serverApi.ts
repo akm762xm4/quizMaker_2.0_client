@@ -7,8 +7,11 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { getToken, logoutUser } from "../utils/localStorage";
 
+// const baseUrl = "http://localhost:8000/api";
+const baseUrl = "https://quiz-maker-2-0-server.vercel.app/api";
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8000/api",
+  baseUrl: baseUrl,
   prepareHeaders: (headers) => {
     const token = getToken();
     if (token) {

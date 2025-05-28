@@ -1,5 +1,6 @@
 import { MdDelete, MdEdit } from "react-icons/md";
 import {
+  AddQuestionI,
   QuestionI,
   useRemoveQuestionMutation,
   useUpdateQuestionMutation,
@@ -26,11 +27,15 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
-  const onSubmit = async (data: Partial<QuestionI>) => {
+  const onSubmit = async (data: AddQuestionI) => {
     try {
+      const formattedData = {
+        ...data,
+        correctOption: Number(data.correctOption),
+      };
       await updateQuestion({
         questionId: question._id,
-        patch: data,
+        patch: formattedData,
       })
         .unwrap()
         .then((res) => {

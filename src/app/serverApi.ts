@@ -1,9 +1,9 @@
 import {
-  BaseQueryApi,
   createApi,
   FetchArgs,
   fetchBaseQuery,
   FetchBaseQueryMeta,
+  BaseQueryFn,
 } from "@reduxjs/toolkit/query/react";
 import { getToken, logoutUser } from "../utils/localStorage";
 
@@ -21,11 +21,13 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithAuth = async (
-  args: string | FetchArgs,
-  api: BaseQueryApi,
-  extraOptions: FetchBaseQueryMeta
-) => {
+const baseQueryWithAuth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  unknown,
+  {},
+  FetchBaseQueryMeta
+> = async (args, api, extraOptions) => {
   let results = await baseQuery(args, api, extraOptions);
 
   if (results.error?.status === 401) {

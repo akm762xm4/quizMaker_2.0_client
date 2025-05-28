@@ -28,11 +28,14 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
     const formattedData = {
       text: values.text,
       category: values.category,
-      correctOption: Number(values.correctOption), // Ensure it's a number
-      options: [values.op1, values.op2, values.op3, values.op4],
+      correctOption: values.correctOption,
+      op1: values.op1,
+      op2: values.op2,
+      op3: values.op3,
+      op4: values.op4,
     };
 
-    onSubmit(formattedData); // Call the provided callback function
+    onSubmit(formattedData);
   };
 
   return (

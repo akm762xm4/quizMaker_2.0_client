@@ -1,7 +1,4 @@
 import { api } from "../../app/serverApi";
-import { getToken } from "../../utils/localStorage";
-
-const token = getToken();
 
 const usersApi = api.injectEndpoints({
   endpoints: (builder) => ({

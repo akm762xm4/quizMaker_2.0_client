@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import {
-  QuestionI,
+  AddQuestionI,
   useAddQuestionMutation,
   useGetQBankByIdQuery,
 } from "./qBankApi";
@@ -18,9 +18,13 @@ export const QBankPage = () => {
   const { data: qBank } = useGetQBankByIdQuery(qBankId);
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
 
-  const onSubmit = async (values: Partial<QuestionI>) => {
+  const onSubmit = async (values: AddQuestionI) => {
     try {
-      await addQuestion({ qBankId: qBankId, body: values })
+      const formattedValues = {
+        ...values,
+        correctOption: Number(values.correctOption),
+      };
+      await addQuestion({ qBankId: qBankId, body: formattedValues })
         .unwrap()
         .then((res) => {
           toast.success(res.message);

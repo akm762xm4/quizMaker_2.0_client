@@ -30,16 +30,18 @@ export const ResultItem: React.FC<ResultItemProps> = ({ result }) => {
           onClick={() => setIsModalOpen(true)}
           className="flex flex-col items-start"
         >
-          <div className="text-xl font-bold">{result.quizId.title}</div>
-          <span className="text-sm">Student : {result.studentId.username}</span>
-        </button>
-        {isHovering && (
-          <div className="px-2">
-            <button onClick={() => setIsDeleteOpen(true)} title="delete">
-              <MdDelete size={24} />
-            </button>
+          <div className="text-sm md:text-xl font-bold">
+            {result.quizId.title}
           </div>
-        )}
+          <span className="text-sm text-gray-600">
+            Student : {result.studentId.username}
+          </span>
+        </button>
+        <div className={`px-2 ${!isHovering && "block md:hidden"}`}>
+          <button onClick={() => setIsDeleteOpen(true)} title="delete">
+            <MdDelete size={24} />
+          </button>
+        </div>
       </div>
       {isModalOpen && (
         <Modal

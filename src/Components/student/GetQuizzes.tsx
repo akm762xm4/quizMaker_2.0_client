@@ -6,7 +6,7 @@ export const GetQuizzes = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex flex-col gap-2 p-2 px-[20%]">
+      <div className="flex flex-col gap-3 p-4 md:px-[20%]">
         {quizzes?.map((quiz) => (
           <QuizItem key={quiz._id} quiz={quiz} />
         ))}

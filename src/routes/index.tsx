@@ -1,6 +1,5 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Auth } from "../Components/Auth";
-import { AdminPage } from "../Components/admin/AdminPage";
 import { Users } from "../Components/admin/Users";
 import { Quizzes as QuizzesAdm } from "../Components/admin/Quizzes";
 import { Quizzes as QuizzesFclty } from "../Components/Faculty/Quizzes";
@@ -44,7 +43,7 @@ const Routing = () => {
         <Route path=":quizId" element={<QuizAttempt />} />
         <Route path="result" element={<ResultsStudent />} />
       </Route>
-      <Route path="*" element={<AdminPage />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 };

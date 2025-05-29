@@ -71,9 +71,9 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
     <>
       <div className="bg-primary p-2 rounded flex flex-row items-center justify-between">
         <div className="flex flex-col items-start">
-          <span className="text-xl font-bold">{quiz.title}</span>
+          <span className="text-lg md:text-xl font-bold">{quiz.title}</span>
           {loggedUser.role === "admin" && (
-            <span className="text-sm">
+            <span className="text-sm md:text-base text-gray-600">
               createdBy : {quiz?.createdBy?.username}
             </span>
           )}
@@ -102,14 +102,14 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
           {isVisible && (
             <div
               id="context-menu"
-              className="absolute bg-white/50 backdrop-blur-xl divide-y border shadow-xl shadow-primary/20 rounded-md z-50 flex flex-col w-max  "
+              className="absolute top-10 right-0 bg-white/50 backdrop-blur-xl divide-y border shadow-xl shadow-primary/20 rounded-md z-50 flex flex-col w-max  "
             >
-              <span className="p-2 flex items-center justify-around ">
+              <span className="p-2 flex items-center justify-around text-sm md:text-base">
                 <span>Toggle</span>
                 <Toggle checked={quiz.enabled} onChange={handleToggleQuiz} />
               </span>
               <button
-                className="p-2 hover:text-accent "
+                className="p-2 hover:text-accent text-sm md:text-base"
                 onClick={() => {
                   setIsVisible(false);
                   setIsEditOpen(true);
@@ -118,14 +118,17 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
                 Edit
               </button>
               <button
-                className="p-2 hover:text-accent"
-                onClick={handleTitleClick}
+                className="p-2 hover:text-accent text-sm md:text-base"
+                onClick={() => {
+                  setIsVisible(false);
+                  handleTitleClick();
+                }}
               >
                 {loggedUser.role === "admin" && "View Quiz Info"}
                 {loggedUser.role === "faculty" && "Manage Questions"}
               </button>
               <button
-                className="p-2 hover:text-accent"
+                className="p-2 hover:text-accent text-sm md:text-base"
                 onClick={() => {
                   setIsVisible(false);
                   setIsDeleteOpen(true);

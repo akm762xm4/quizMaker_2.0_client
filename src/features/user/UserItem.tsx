@@ -41,24 +41,30 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
       <div
         onMouseOver={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        className="flex flex-row items-center justify-between bg-primary p-2 rounded"
+        className="flex flex-row items-center justify-between bg-primary p-2 rounded text-sm md:text-base"
       >
         <span className="flex flex-col items-start gap-1">
-          <span className="text-xl">{user.username}</span>
+          <span className="text-lg md:text-xl">{user.username}</span>
           <Badge role={user.role} />
         </span>
 
-        {isHovering && (
-          <span className="flex flex-row items-center gap-4">
-            <button onClick={() => setIsEditOpen(true)} title="edit">
-              <MdEditNote size={24} />
-            </button>
-            <button onClick={() => setIsDeleteOpen(true)} title="delete">
-              <MdDelete size={24} />
-            </button>
-            <Toggle checked={user.isActive} onChange={onToggleChange} />
-          </span>
-        )}
+        <span
+          className={`flex flex-row items-center gap-2 md:gap-4 ${
+            !isHovering && "flex md:hidden"
+          }`}
+        >
+          <button
+            onClick={() => setIsEditOpen(true)}
+            title="edit"
+            className="text-xl md:text-2xl"
+          >
+            <MdEditNote size={24} />
+          </button>
+          <button onClick={() => setIsDeleteOpen(true)} title="delete">
+            <MdDelete size={24} />
+          </button>
+          <Toggle checked={user.isActive} onChange={onToggleChange} />
+        </span>
       </div>
       {isEditOpen && (
         <Modal

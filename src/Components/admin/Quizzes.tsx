@@ -25,17 +25,17 @@ export const Quizzes = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="p-4 flex  gap-3 bg-primary/20">
+      <div className="p-4 flex items-center gap-3 bg-primary/20">
         <TbFilterSearch size={24} />
         <input
           type="text"
           placeholder="Search by quiz title"
           value={term}
           onChange={(e) => setTerm(() => e.target.value)}
-          className="bg-primary outline-none rounded px-1 placeholder:text-xs"
+          className="bg-primary w-full md:w-auto outline-none rounded p-1 md:px-1 placeholder:text-xs"
         />
       </div>
-      <div className="flex flex-col gap-2 p-2 px-[20%]">
+      <div className="flex flex-col gap-3 p-4 md:px-[20%]">
         {filteredQuizzes?.map((quiz) => (
           <QuizItem key={quiz._id} quiz={quiz} />
         ))}

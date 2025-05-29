@@ -42,19 +42,19 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-2 bg-highlight/40 p-4 rounded-lg shadow-md">
-        <span className="flex gap-2">
+        <span className="flex gap-2 text-sm md:text-base flex-col md:flex-row">
           <label htmlFor="username">Username</label>
           <input
-            className="bg-highlight/50 px-1 outline-none rounded ml-auto"
+            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="username"
             type="text"
             {...register("username")}
           />
         </span>
-        <span className="flex gap-2">
+        <span className="flex gap-2 text-sm md:text-base flex-col md:flex-row">
           <label htmlFor="role">Role</label>
           <select
-            className="bg-highlight/50 px-1 outline-none rounded ml-auto"
+            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="role"
             {...register("role")}
           >
@@ -64,7 +64,7 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
             <option value="student">Student</option>
           </select>
         </span>
-        <span className="ml-auto flex gap-1">
+        <span className="ml-auto flex gap-1 text-sm md:text-base">
           <button className="bg-highlight p-1 rounded" type="reset">
             Reset
           </button>

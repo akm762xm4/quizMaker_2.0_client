@@ -34,7 +34,7 @@ export const Modal: React.FC<AddModalProps> = ({
         >
           <AiOutlineClose size={18} />
         </button>
-        <div className="text-3xl font-semibold">{title}</div>
+        <div className="text-2xl md:text-3xl font-semibold">{title}</div>
         {child}
       </div>
     </>,

@@ -28,27 +28,25 @@ export const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
       className="bg-primary p-2 rounded flex flex-row items-center justify-between"
     >
       <span className="flex flex-col">
-        <span className="text-xl">{request.username}</span>
+        <span className="text-sm md:text-xl">{request.username}</span>
         <Badge bg="bg-red-500/40" title={request.status} />
       </span>
       <span
-        className={`${
-          isHovering ? "visible" : "hidden"
-        } flex items-center gap-2`}
+        className={`flex items-center gap-2 ${!isHovering && "hidden md:flex"}`}
       >
         <button
           onClick={() => handleRequest("reject")}
           className="bg-red-500 p-1 rounded-lg"
           title="reject"
         >
-          <IoClose size={30} />
+          <IoClose size={24} />
         </button>
         <button
           onClick={() => handleRequest("approve")}
-          className=" bg-green-500 p-1 rounded-lg "
+          className="bg-green-500 p-1 rounded-lg"
           title="approve"
         >
-          <IoCheckmark size={30} />
+          <IoCheckmark size={24} />
         </button>
       </span>
     </div>

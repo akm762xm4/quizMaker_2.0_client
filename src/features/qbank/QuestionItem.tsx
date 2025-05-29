@@ -57,7 +57,7 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
       <div className="bg-primary rounded-lg p-4 shadow-md ">
         {/* Question Text */}
         <span className="flex flex-col gap-2">
-          <p className="font-medium text-lg ">{question.text}</p>
+          <p className="font-medium text-sm md:text-lg ">{question.text}</p>
           <span className="flex items-center justify-between pb-4">
             <Badge bg="bg-red-500/40" title={question.category} />
             <span className="flex flex-row gap-2">
@@ -76,7 +76,7 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
           {question.options.map((option, index) => (
             <label
               key={option}
-              className={`flex items-center gap-2 p-2 rounded ${
+              className={`flex items-center gap-2 p-2 rounded text-xs md:text-sm ${
                 index == question?.correctOption
                   ? "bg-accent"
                   : "bg-gray-800/20"

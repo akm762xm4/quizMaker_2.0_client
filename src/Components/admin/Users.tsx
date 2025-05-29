@@ -44,31 +44,34 @@ export const Users = () => {
   return (
     <>
       <div className="flex flex-col">
-        <div className="p-4 flex  items-center gap-3 bg-primary/20">
-          <TbFilterSearch size={24} />
-          <label>
-            <input
-              type="checkbox"
-              checked={filters.active}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, active: e.target.checked }))
-              }
-            />
-            Active
-          </label>
+        <div className="p-4 flex flex-col md:flex-row items-start md:items-center gap-3 bg-primary/20">
+          <div className="flex items-center md:justify-normal gap-4">
+            <TbFilterSearch size={24} />
+            <label className="flex items-center gap-2 text-sm md:text-base">
+              <input
+                type="checkbox"
+                checked={filters.active}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, active: e.target.checked }))
+                }
+                className="w-4 h-4"
+              />
+              Active
+            </label>
 
-          <select
-            title="filter"
-            value={filters.role}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, role: e.target.value }))
-            }
-            className="bg-primary rounded outline-none"
-          >
-            <option value="">All Roles</option>
-            <option value="faculty">Faculty</option>
-            <option value="student">Student</option>
-          </select>
+            <select
+              title="filter"
+              value={filters.role}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, role: e.target.value }))
+              }
+              className="bg-primary rounded outline-none text-sm md:text-base"
+            >
+              <option value="">All Roles</option>
+              <option value="faculty">Faculty</option>
+              <option value="student">Student</option>
+            </select>
+          </div>
 
           <input
             type="text"
@@ -77,10 +80,10 @@ export const Users = () => {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, search: e.target.value }))
             }
-            className="bg-primary outline-none rounded px-1 placeholder:text-xs"
+            className="bg-primary outline-none rounded p-1 md:px-1 placeholder:text-xs w-full md:w-auto text-sm md:text-base"
           />
         </div>
-        <div className="flex flex-col px-[20%] gap-2 p-2">
+        <div className="flex flex-col md:px-[20%] gap-3 p-4">
           {filteredUsers?.map((user) => (
             <UserItem key={user._id} user={user} />
           ))}

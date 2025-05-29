@@ -38,17 +38,19 @@ export const QBankPage = () => {
 
   return (
     <>
-      <div className="bg-secondary min-h-screen p-6">
+      <div className="bg-secondary min-h-screen p-4 md:p-6">
         {/* Title Section */}
         <div className="flex items-center justify-between bg-primary p-4 rounded-lg mb-6 shadow-md">
-          <span className=" text-2xl font-semibold ">{qBank?.title}</span>
+          <span className=" text-xl font-semibold  md:text-2xl">
+            {qBank?.title}
+          </span>
           <button title="add" onClick={() => setIsAddOpen(true)}>
-            <FaPlus size={24} />
+            <FaPlus size={20} className="md:w-6 md:h-6" />
           </button>
         </div>
 
         {/* Questions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
           {qBank?.questions.map((question) => (
             <QuestionItem
               key={question._id}

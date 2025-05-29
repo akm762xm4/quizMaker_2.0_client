@@ -35,27 +35,29 @@ export const QBankItem: React.FC<QBankItemProps> = ({ qBank }) => {
             <button
               title="view"
               onClick={() => navigate(`${qBank._id}`)}
-              className="text-xl font-bold"
+              className="text-sm md:text-xl font-bold"
             >
               {qBank.title}
             </button>
           ) : (
-            <span className="text-xl font-bold">{qBank.title}</span>
+            <span className="text-sm md:text-xl font-bold">{qBank.title}</span>
           )}
-          <span className="text-sm">
+          <span className="text-sm text-gray-600">
             createdBy : {qBank?.createdBy?.username}
           </span>
         </div>
-        {isHovering && (
-          <div className="flex items-center gap-4">
-            <button onClick={() => setIsEditOpen(true)} title="edit">
-              <MdEditNote size={24} />
-            </button>
-            <button onClick={() => setIsDeleteOpen(true)} title="delete">
-              <MdDelete size={24} />
-            </button>
-          </div>
-        )}
+        <div
+          className={`flex items-center gap-2 md:gap-4 ${
+            !isHovering && "flex md:hidden"
+          }`}
+        >
+          <button onClick={() => setIsEditOpen(true)} title="edit">
+            <MdEditNote size={24} />
+          </button>
+          <button onClick={() => setIsDeleteOpen(true)} title="delete">
+            <MdDelete size={24} />
+          </button>
+        </div>
       </div>
       {isEditOpen && (
         <Modal

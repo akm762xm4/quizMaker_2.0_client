@@ -16,7 +16,7 @@ export const ResultPage: React.FC<ResultPageProps> = ({ result }) => {
           <span>{result.totalMarks}</span>
         </span>
       </div>
-      <div>
+      <div className="text-sm md:text-base">
         <span>attempted On:</span>
         <span>{new Date(result?.attemptedOn).toDateString()}</span>
       </div>

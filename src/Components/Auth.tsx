@@ -8,9 +8,9 @@ export const Auth = () => {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="flex flex-col p-4 gap-4 bg-primary rounded shadow-2xl shadow-accent">
-        <div className="flex justify-around text-2xl ">
+        <div className="flex justify-around text-xl md:text-2xl  ">
           <button
-            className={`${state === 0 && "font-bold"}`}
+            className={`${state === 0 && "font-bold "}`}
             onClick={() => setState(0)}
           >
             Login

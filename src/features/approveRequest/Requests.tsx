@@ -9,7 +9,7 @@ export const Requests = () => {
   }
 
   return (
-    <div className="flex flex-col gap-2 p-2 px-[20%] h-screen">
+    <div className="flex flex-col gap-3 p-4 md:px-[20%] h-screen">
       {requests?.map((request) => (
         <RequestItem key={request._id} request={request} />
       ))}

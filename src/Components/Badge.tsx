@@ -10,13 +10,15 @@ export const Badge: React.FC<BadgeProps> = ({ role, title, bg }) => {
         <span
           className={`${
             role === "faculty" ? "bg-blue-500" : "bg-green-500"
-          } text-sm rounded w-min px-1 ring-2`}
+          } text-sm md:text-base rounded w-min px-1 ring-2`}
         >
           {role}
         </span>
       )}
       {title && bg && (
-        <span className={`${bg} px-1 rounded ring-2 text-sm`}>{title}</span>
+        <span className={`${bg} px-1 rounded ring-2 text-sm md:text-base`}>
+          {title}
+        </span>
       )}
     </>
   );

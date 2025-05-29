@@ -59,25 +59,25 @@ export const AddQuizForm: React.FC<AddQuizFormProps> = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col gap-2 bg-highlight/40 p-4 rounded-lg shadow-md">
-        <span className="flex gap-2">
+        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
           <label htmlFor="title">Title</label>
           <input
-            className="bg-highlight/50 px-1 outline-none rounded ml-auto"
+            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="title"
             type="text"
             {...register("title")}
           />
         </span>
-        <span className="flex gap-2">
+        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
           <label htmlFor="maxTime">Max-Time(sec)</label>
           <input
-            className="bg-highlight/50 px-1 outline-none rounded ml-auto"
+            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="maxTime"
             type="number"
             {...register("maxTime")}
           />
         </span>
-        <span className="ml-auto flex gap-1">
+        <span className="ml-auto flex gap-1 text-sm md:text-base">
           <button className="bg-highlight p-1 rounded" type="reset">
             Reset
           </button>

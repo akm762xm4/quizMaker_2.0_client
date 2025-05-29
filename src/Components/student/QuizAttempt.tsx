@@ -93,8 +93,8 @@ const QuizAttempt = () => {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  bg-white">
-      <h2 className="text-xl font-bold mb-4">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white min-w-[250px] md:min-w-[500px]">
+      <h2 className="text-xl font-bold mb-4 ">
         Question {currentQuestionIndex + 1} of {questions.length}
       </h2>
       <p className="mb-4">{currentQuestion.text}</p>
@@ -119,7 +119,7 @@ const QuizAttempt = () => {
         <button
           onClick={handlePrevious}
           disabled={currentQuestionIndex === 0}
-          className="bg-accent  px-4 py-2 rounded disabled:bg-gray-300 disabled:text-gray-500"
+          className="bg-accent  px-4 py-2 rounded disabled:bg-gray-300 disabled:text-gray-500 text-sm md:text-base"
         >
           Previous
         </button>
@@ -127,7 +127,7 @@ const QuizAttempt = () => {
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="bg-secondary text-white px-4 py-2 rounded disabled:bg-gray-300"
+            className="bg-secondary text-white px-4 py-2 rounded disabled:bg-gray-300 text-sm md:text-base"
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </button>
@@ -135,7 +135,7 @@ const QuizAttempt = () => {
           <button
             onClick={handleNext}
             disabled={currentQuestionIndex === questions.length - 1}
-            className="bg-accent  px-4 py-2 rounded disabled:bg-gray-300"
+            className="bg-accent  px-4 py-2 rounded disabled:bg-gray-300 text-sm md:text-base"
           >
             Next
           </button>

@@ -43,18 +43,18 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
       <div className="flex flex-col gap-3 bg-highlight/40 p-4 rounded-lg shadow-md">
         <span className="flex flex-col ">
           <label htmlFor="text">Question</label>
-          <input
-            className="bg-highlight/50  outline-none rounded p-2 "
+          <textarea
+            className="bg-highlight/50  outline-none rounded p-2 text-xs md:text-sm"
             id="text"
-            type="text"
+            rows={5}
             {...register("text", { required: true })}
           />
         </span>
 
-        <span className="flex gap-2">
+        <span className="flex flex-col md:flex-row gap-2">
           <label htmlFor="category">Topic</label>
           <input
-            className="bg-highlight/50 px-1 outline-none rounded ml-auto"
+            className="bg-highlight/50 px-1 outline-none rounded text-sm md:text-base"
             id="category"
             type="text"
             {...register("category", { required: true })}
@@ -62,26 +62,33 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
         </span>
 
         {/* Options & Radio Buttons */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col  gap-2">
           {["op1", "op2", "op3", "op4"].map((option, index) => (
-            <label key={option} className="flex items-center gap-2">
+            <label
+              key={option}
+              className="flex flex-col text-xs md:text-sm md:flex-row items-start gap-2"
+            >
               {`option-${index + 1}`}
-              <input
-                type="radio"
-                value={index.toString()} // Convert index to string to match correctOption type
-                {...register("correctOption", { required: true })}
-              />
-              <input
-                type="text"
-                className="bg-highlight/50 px-1 outline-none rounded"
-                {...register(option as keyof AddQuestionI, { required: true })}
-              />
+              <div className="flex flex-row gap-2">
+                <input
+                  type="radio"
+                  value={index.toString()} // Convert index to string to match correctOption type
+                  {...register("correctOption", { required: true })}
+                />
+                <input
+                  type="text"
+                  className="bg-highlight/50 px-1 outline-none rounded"
+                  {...register(option as keyof AddQuestionI, {
+                    required: true,
+                  })}
+                />
+              </div>
             </label>
           ))}
         </div>
 
         {/* Buttons */}
-        <span className="ml-auto flex gap-1">
+        <span className="ml-auto flex gap-1 text-sm md:text-base">
           <button className="bg-highlight p-1 rounded" type="reset">
             Reset
           </button>

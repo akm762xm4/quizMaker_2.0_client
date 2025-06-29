@@ -5,7 +5,7 @@ import {
   useCreateQuizMutation,
   useUpdateQuizMutation,
 } from "./quizApi";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ErrorI } from "../../types";
 import { useEffect } from "react";
 
@@ -20,8 +20,8 @@ export const AddQuizForm: React.FC<AddQuizFormProps> = ({
   isEdit,
   quiz,
 }) => {
-  const [createQuiz] = useCreateQuizMutation();
-  const [updateQuiz] = useUpdateQuizMutation();
+  const [createQuiz, { isLoading: isCreating }] = useCreateQuizMutation();
+  const [updateQuiz, { isLoading: isUpdating }] = useUpdateQuizMutation();
   const { register, handleSubmit, setValue } = useForm<AddQuizFormI>();
   const onSubmit: SubmitHandler<AddQuizFormI> = async (values) => {
     if (!values.maxTime || !values.title) {
@@ -58,33 +58,49 @@ export const AddQuizForm: React.FC<AddQuizFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2 bg-highlight/40 p-4 rounded-lg shadow-md">
-        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
-          <label htmlFor="title">Title</label>
+      <div className="flex flex-col gap-4 bg-highlight/40 p-6 rounded-lg shadow-modal w-full max-w-md ">
+        <div className="form-group">
+          <label htmlFor="title" className="form-label">
+            Quiz Title
+          </label>
           <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="title"
             type="text"
+            className="form-input"
+            placeholder="Enter quiz title"
             {...register("title")}
           />
-        </span>
-        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
-          <label htmlFor="maxTime">Max-Time(sec)</label>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="maxTime" className="form-label">
+            Max Time (in seconds)
+          </label>
           <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="maxTime"
             type="number"
+            className="form-input"
+            placeholder="e.g. 120"
             {...register("maxTime")}
           />
-        </span>
-        <span className="ml-auto flex gap-1 text-sm md:text-base">
-          <button className="bg-highlight p-1 rounded" type="reset">
+        </div>
+
+        <div className="flex justify-end gap-2 text-sm">
+          <button title="Reset" type="reset" className="btn-outline">
             Reset
           </button>
-          <button className="bg-accent p-1 rounded" type="submit">
-            Submit
+          <button
+            type="submit"
+            className="btn-primary disabled:opacity-50"
+            disabled={isCreating || isUpdating}
+          >
+            {isCreating || isUpdating
+              ? "Saving..."
+              : isEdit
+              ? "Update"
+              : "Create"}
           </button>
-        </span>
+        </div>
       </div>
     </form>
   );

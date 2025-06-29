@@ -8,41 +8,65 @@ import { ResultPage } from "./ResultPage";
 interface ResultItemProps {
   result: Result;
 }
+
 export const ResultItem: React.FC<ResultItemProps> = ({ result }) => {
-  const [deleteResult] = useDeleteResultMutation();
-  const [isModalOpen, setIsModalOpen] = useState<boolean | false>(false);
+  const [deleteResult, { isLoading: isDeleting }] = useDeleteResultMutation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [isHovering, setIsHovering] = useState<boolean | false>(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   const deleteResultHandler = async () => {
     await deleteResult(result._id)
       .unwrap()
       .then(() => setIsDeleteOpen(false));
   };
+
   return (
     <>
       <div
-        onMouseOver={() => setIsHovering(true)}
+        onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        className="bg-primary p-2 rounded flex flex-row items-center justify-between"
+        className="card flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-all hover:shadow-lg"
       >
+        {/* Left: Quiz & student info */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex flex-col items-start"
+          className="text-left flex-1"
         >
-          <div className="text-sm md:text-xl font-bold">
+          <div className="text-lg font-semibold text-accent hover:underline">
             {result.quizId.title}
           </div>
-          <span className="text-sm text-gray-600">
-            Student : {result.studentId.username}
-          </span>
+          <div className="text-sm text-text-secondary">
+            Student: {result.studentId.username}
+          </div>
+          <div className="text-xs text-text-secondary mt-1">
+            Attempted on:{" "}
+            {new Date(result.attemptedOn).toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
         </button>
-        <div className={`px-2 ${!isHovering && "block md:hidden"}`}>
-          <button onClick={() => setIsDeleteOpen(true)} title="delete">
-            <MdDelete size={24} />
+
+        {/* Right: Score + Delete button */}
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="bg-accent/10 text-accent px-4 py-1.5 text-sm rounded-full font-semibold">
+            {result.score}/{result.totalMarks}
+          </div>
+          <button
+            onClick={() => setIsDeleteOpen(true)}
+            title="Delete"
+            className={`text-text-secondary hover:text-danger transition ${
+              isHovering ? "opacity-100" : "opacity-0 md:opacity-100"
+            }`}
+          >
+            <MdDelete size={20} />
           </button>
         </div>
       </div>
+
+      {/* Result Modal */}
       {isModalOpen && (
         <Modal
           title={`Result of ${result.studentId.username}`}
@@ -50,6 +74,8 @@ export const ResultItem: React.FC<ResultItemProps> = ({ result }) => {
           setIsOpen={setIsModalOpen}
         />
       )}
+
+      {/* Delete Modal */}
       {isDeleteOpen && (
         <Modal
           title="Delete Result"
@@ -59,6 +85,7 @@ export const ResultItem: React.FC<ResultItemProps> = ({ result }) => {
               name="result"
               deleteHandler={deleteResultHandler}
               closeModal={() => setIsDeleteOpen(false)}
+              isLoading={isDeleting}
             />
           }
         />

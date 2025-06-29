@@ -3,22 +3,38 @@ import { Result } from "./resultApi";
 interface ResultPageProps {
   result: Result;
 }
+
 export const ResultPage: React.FC<ResultPageProps> = ({ result }) => {
   return (
-    <div className="flex flex-col bg-secondary/20 p-4 rounded-lg shadow-md gap-4">
-      <div className="flex flex-row justify-between bg-highlight rounded-lg items-center">
-        <span className="flex flex-col p-2 gap-2">
-          <span>{result.quizId.title}</span>
-          <span>{result.studentId.username}</span>
-        </span>
-        <span className="flex flex-col bg-accent/70 p-4 rounded-r-lg divide-secondary divide-y">
-          <span>{result.score}</span>
-          <span>{result.totalMarks}</span>
-        </span>
+    <div className="bg-white p-6 rounded-xl shadow-card flex flex-col gap-6 w-full max-w-lg">
+      <div className="space-y-1">
+        <h3 className="text-xl font-bold text-text-primary">
+          {result.quizId.title}
+        </h3>
+        <p className="text-sm text-text-secondary">
+          Student:{" "}
+          <span className="font-medium">{result.studentId.username}</span>
+        </p>
       </div>
-      <div className="text-sm md:text-base">
-        <span>attempted On:</span>
-        <span>{new Date(result?.attemptedOn).toDateString()}</span>
+
+      <div className="flex items-center justify-between bg-highlight p-4 rounded-md shadow-inner">
+        <div className="flex flex-col text-sm">
+          <span className="text-muted-foreground">Score</span>
+          <span className="text-lg font-semibold text-text-primary">
+            {result.score}
+          </span>
+        </div>
+        <div className="flex flex-col text-sm">
+          <span className="text-muted-foreground">Total Marks</span>
+          <span className="text-lg font-semibold text-text-primary">
+            {result.totalMarks}
+          </span>
+        </div>
+      </div>
+
+      <div className="text-sm text-text-secondary">
+        <span className="font-medium">Attempted On: </span>
+        {new Date(result.attemptedOn).toLocaleDateString()}
       </div>
     </div>
   );

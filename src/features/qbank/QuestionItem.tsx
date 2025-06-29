@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Modal } from "../../Components/Modal";
 import { QuestionForm } from "./QuestionForm";
 import { DeleteForm } from "../user/DeleteForm";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ErrorI } from "../../types";
 import { Badge } from "../../Components/Badge";
 
@@ -22,10 +22,12 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
   question,
   qBankId,
 }) => {
-  const [updateQuestion] = useUpdateQuestionMutation();
-  const [deleteQuestion] = useRemoveQuestionMutation();
-  const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  const [updateQuestion, { isLoading: isUpdating }] =
+    useUpdateQuestionMutation();
+  const [deleteQuestion, { isLoading: isDeleting }] =
+    useRemoveQuestionMutation();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const onSubmit = async (data: AddQuestionI) => {
     try {
@@ -38,8 +40,8 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
         patch: formattedData,
       })
         .unwrap()
-        .then((res) => {
-          toast.success(res?.message);
+        .then(() => {
+          toast.success("Question updated successfully.");
           setIsEditOpen(false);
         });
     } catch (error) {
@@ -49,52 +51,72 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
   };
 
   const deleteQuestionHandler = async () => {
-    await deleteQuestion({ qBankId: qBankId, questionId: question._id });
+    await deleteQuestion({ qBankId, questionId: question._id })
+      .unwrap()
+      .then(() => {
+        toast.success("Question deleted successfully.");
+        setIsDeleteOpen(false);
+      });
   };
 
   return (
     <>
-      <div className="bg-primary rounded-lg p-4 shadow-md ">
-        {/* Question Text */}
-        <span className="flex flex-col gap-2">
-          <p className="font-medium text-sm md:text-lg ">{question.text}</p>
-          <span className="flex items-center justify-between pb-4">
-            <Badge bg="bg-red-500/40" title={question.category} />
-            <span className="flex flex-row gap-2">
-              <button title="edit" onClick={() => setIsDeleteOpen(true)}>
-                <MdDelete size={24} />
+      <div className="card p-4 rounded-lg shadow-sm flex flex-col gap-4 hover:shadow-md transition">
+        {/* Question Title */}
+        <div className="flex flex-col gap-2">
+          <p className="font-medium text-sm md:text-base text-text-primary">
+            {question.text}
+          </p>
+
+          {/* Category & Actions */}
+          <div className="flex items-center justify-between">
+            <Badge bg="bg-accent/10 text-accent" title={question.category} />
+            <div className="flex items-center gap-2">
+              <button
+                title="Edit"
+                onClick={() => setIsEditOpen(true)}
+                className="text-text-secondary hover:text-accent transition"
+              >
+                <MdEdit size={20} />
               </button>
-              <button title="edit" onClick={() => setIsEditOpen(true)}>
-                <MdEdit size={24} />
+              <button
+                title="Delete"
+                onClick={() => setIsDeleteOpen(true)}
+                className="text-text-secondary hover:text-danger transition"
+              >
+                <MdDelete size={20} />
               </button>
-            </span>
-          </span>
-        </span>
+            </div>
+          </div>
+        </div>
 
         {/* Options */}
         <div className="flex flex-col gap-2">
-          {question.options.map((option, index) => (
-            <label
-              key={option}
-              className={`flex items-center gap-2 p-2 rounded text-xs md:text-sm ${
-                index == question?.correctOption
-                  ? "bg-accent"
-                  : "bg-gray-800/20"
-              }`}
-            >
-              <input
-                type="radio"
-                name={`question-${question._id}`}
-                value={option}
-                checked={index == question.correctOption}
-                className="accent-black"
-                readOnly
-              />
-              {option}
-            </label>
-          ))}
+          {question.options.map((option, index) => {
+            const isCorrect = index === question.correctOption;
+            return (
+              <label
+                key={option}
+                className={`flex items-center gap-2 text-sm p-2 rounded-lg ${
+                  isCorrect
+                    ? "bg-accent/80 text-white"
+                    : "bg-muted text-text-secondary"
+                }`}
+              >
+                <input
+                  type="radio"
+                  checked={isCorrect}
+                  readOnly
+                  className="accent-black cursor-default"
+                />
+                {option}
+              </label>
+            );
+          })}
         </div>
       </div>
+
+      {/* Edit Modal */}
       {isEditOpen && (
         <Modal
           title="Edit Question"
@@ -102,20 +124,24 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({
           child={
             <QuestionForm
               question={question}
-              onSubmit={(data) => onSubmit(data)}
+              onSubmit={onSubmit}
+              isLoading={isUpdating}
             />
           }
         />
       )}
+
+      {/* Delete Modal */}
       {isDeleteOpen && (
         <Modal
-          title="delete Question"
+          title="Delete Question"
           setIsOpen={setIsDeleteOpen}
           child={
             <DeleteForm
               closeModal={() => setIsDeleteOpen(false)}
               name="question"
               deleteHandler={deleteQuestionHandler}
+              isLoading={isDeleting}
             />
           }
         />

@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ErrorI } from "../../types";
 import { useEffect } from "react";
 import {
@@ -20,29 +20,27 @@ export const AddQBankForm: React.FC<AddQBankFormProps> = ({
   isEdit,
   qBank,
 }) => {
-  const [renameQBank] = useRenameQBankMutation();
-  const [createQBank] = useCreateQBankMutation();
+  const [renameQBank, { isLoading: isRenaming }] = useRenameQBankMutation();
+  const [createQBank, { isLoading: isCreating }] = useCreateQBankMutation();
   const { register, handleSubmit, setValue } = useForm<AddQBankFormI>();
+
   const onSubmit: SubmitHandler<AddQBankFormI> = async (values) => {
     if (!values.title) {
-      toast.error("field is required!");
+      toast.error("Field is required!");
+      return;
     }
     try {
-      if (isEdit) {
-        await renameQBank({ qBankId: qBank?._id, body: values })
-          .unwrap()
-          .then((res) => {
-            toast.success(res?.message);
-            closeModal();
-          });
+      if (isEdit && qBank) {
+        const res = await renameQBank({
+          qBankId: qBank._id,
+          body: values,
+        }).unwrap();
+        toast.success(res.message);
       } else {
-        await createQBank(values)
-          .unwrap()
-          .then((res) => {
-            toast.success(res?.message);
-            closeModal();
-          });
+        const res = await createQBank(values).unwrap();
+        toast.success(res.message);
       }
+      closeModal();
     } catch (error) {
       const err = error as ErrorI;
       toast.error(err?.data?.error);
@@ -50,31 +48,41 @@ export const AddQBankForm: React.FC<AddQBankFormProps> = ({
   };
 
   useEffect(() => {
-    if (isEdit === true && qBank) {
-      setValue("title", qBank?.title);
+    if (isEdit && qBank) {
+      setValue("title", qBank.title);
     }
-  });
+  }, [isEdit, qBank, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2 bg-highlight/40 p-4 rounded-lg shadow-md">
-        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
-          <label htmlFor="title">Title</label>
+      <div className="flex flex-col gap-4 bg-highlight/40 p-6 rounded-lg shadow-md">
+        <div className="form-group">
+          <label htmlFor="title" className="form-label">
+            Title
+          </label>
           <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="title"
             type="text"
+            className="form-input"
             {...register("title")}
           />
-        </span>
-        <span className="ml-auto flex gap-1 text-sm md:text-base">
-          <button className="bg-highlight p-1 rounded" type="reset">
+        </div>
+        <div className="ml-auto flex gap-2 text-sm">
+          <button className="btn-outline" type="reset">
             Reset
           </button>
-          <button className="bg-accent p-1 rounded" type="submit">
-            Submit
+          <button
+            className="btn-primary disabled:opacity-50"
+            type="submit"
+            disabled={isRenaming || isCreating}
+          >
+            {isRenaming || isCreating
+              ? "Saving..."
+              : isEdit
+              ? "Update"
+              : "Create"}
           </button>
-        </span>
+        </div>
       </div>
     </form>
   );

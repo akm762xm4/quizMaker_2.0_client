@@ -10,55 +10,72 @@ import { AddQBankForm } from "./AddQBankForm";
 interface QBankItemProps {
   qBank: IQBank;
 }
+
 export const QBankItem: React.FC<QBankItemProps> = ({ qBank }) => {
-  const [deleteQBank] = useDeleteQBankMutation();
-  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean | false>(false);
-  const [isEditOpen, setIsEditOpen] = useState<boolean | false>(false);
-  const [isHovering, setIsHovering] = useState<boolean | false>(false);
+  const [deleteQBank, { isLoading: isDeleting }] = useDeleteQBankMutation();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
   const loggedUser = getUser();
 
   const handleDeleteQBank = async () => {
-    await deleteQBank(qBank?._id)
+    await deleteQBank(qBank._id)
       .unwrap()
       .then(() => setIsDeleteOpen(false));
   };
+
   return (
     <>
       <div
-        onMouseOver={() => setIsHovering(true)}
+        onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        className="bg-primary p-2 rounded flex flex-row items-center justify-between"
+        className="card flex items-start justify-between gap-4 transition-all hover:shadow-lg"
       >
-        <div className="flex flex-col items-start">
+        {/* Left side: title and meta */}
+        <div className="flex flex-col">
           {loggedUser.role === "faculty" ? (
             <button
               title="view"
               onClick={() => navigate(`${qBank._id}`)}
-              className="text-sm md:text-xl font-bold"
+              className="text-lg font-semibold text-left text-accent hover:underline"
             >
               {qBank.title}
             </button>
           ) : (
-            <span className="text-sm md:text-xl font-bold">{qBank.title}</span>
+            <span className="text-lg font-semibold text-text-primary">
+              {qBank.title}
+            </span>
           )}
-          <span className="text-sm text-gray-600">
-            createdBy : {qBank?.createdBy?.username}
+          <span className="text-sm text-text-secondary">
+            Created by: {qBank?.createdBy?.username}
           </span>
         </div>
+
+        {/* Actions */}
         <div
-          className={`flex items-center gap-2 md:gap-4 ${
-            !isHovering && "flex md:hidden"
-          }`}
+          className={`flex items-center gap-3 ${
+            isHovering ? "opacity-100" : "opacity-0 md:opacity-100"
+          } transition-opacity`}
         >
-          <button onClick={() => setIsEditOpen(true)} title="edit">
-            <MdEditNote size={24} />
+          <button
+            onClick={() => setIsEditOpen(true)}
+            title="Edit"
+            className="text-text-secondary hover:text-accent"
+          >
+            <MdEditNote size={22} />
           </button>
-          <button onClick={() => setIsDeleteOpen(true)} title="delete">
-            <MdDelete size={24} />
+          <button
+            onClick={() => setIsDeleteOpen(true)}
+            title="Delete"
+            className="text-text-secondary hover:text-danger"
+          >
+            <MdDelete size={22} />
           </button>
         </div>
       </div>
+
+      {/* Edit Modal */}
       {isEditOpen && (
         <Modal
           title="Edit QuestionBank"
@@ -72,15 +89,18 @@ export const QBankItem: React.FC<QBankItemProps> = ({ qBank }) => {
           }
         />
       )}
+
+      {/* Delete Modal */}
       {isDeleteOpen && (
         <Modal
-          title="Delete"
+          title="Delete QuestionBank"
           setIsOpen={setIsDeleteOpen}
           child={
             <DeleteForm
               name={qBank.title}
               deleteHandler={handleDeleteQBank}
               closeModal={() => setIsDeleteOpen(false)}
+              isLoading={isDeleting}
             />
           }
         />

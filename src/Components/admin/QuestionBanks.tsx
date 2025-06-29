@@ -6,55 +6,71 @@ import { NoResult } from "../NoResult";
 import { FaPlus } from "react-icons/fa";
 import { Modal } from "../Modal";
 import { AddQBankForm } from "../../features/qbank/AddQBankForm";
+import { PageHeader } from "../PageHeader";
+import Loader from "../Loader";
 
 export const QuestionBanks = () => {
-  const { data: qBanks } = useGetAllQBanksQuery();
+  const { data: qBanks, isLoading, isFetching } = useGetAllQBanksQuery();
   const [filteredQBanks, setFilteredQBanks] = useState<IQBank[] | undefined>();
-  const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
   const [term, setTerm] = useState("");
 
   useEffect(() => {
     let filtered = qBanks;
-
     filtered = filtered?.filter((qBank) =>
       qBank.title.toLowerCase().includes(term.toLowerCase())
     );
-
     setFilteredQBanks(filtered);
   }, [term, qBanks]);
 
-  if (!qBanks?.length) {
-    return <NoResult />;
+  if (isLoading || isFetching) {
+    return <Loader />;
   }
+
+  if (!isLoading && !isFetching && !qBanks?.length) {
+    return <NoResult message="No question banks found." />;
+  }
+
   return (
     <>
-      <div className="flex flex-col h-screen">
-        <div className="p-4 flex items-center gap-3 bg-primary/20 ">
-          <TbFilterSearch size={24} />
-          <input
-            type="text"
-            placeholder="Search by questionbank title"
-            value={term}
-            onChange={(e) => setTerm(() => e.target.value)}
-            className="bg-primary outline-none rounded p-1 md:px-1 placeholder:text-xs w-full md:w-auto"
-          />
+      <div className="flex flex-col min-h-screen">
+        {/* Filter + Add */}
+        <PageHeader
+          title="Question Banks"
+          description="Organize and manage reusable question banks. Create new or edit existing banks."
+        />
+
+        <div className="p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between bg-primary/20 rounded mb-4">
+          <div className="flex items-center gap-2 w-full md:max-w-md">
+            <TbFilterSearch size={20} className="text-text-secondary" />
+            <input
+              type="text"
+              placeholder="Search question bank..."
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+              className="form-input placeholder:text-sm text-sm"
+            />
+          </div>
+          <button
+            className="btn-primary flex items-center gap-2"
+            onClick={() => setIsAddOpen(true)}
+          >
+            <FaPlus size={14} /> Add Question Bank
+          </button>
         </div>
-        <div className="flex flex-col gap-3 p-4 md:px-[10%]">
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-[10%]">
           {filteredQBanks?.map((qBank) => (
             <QBankItem key={qBank._id} qBank={qBank} />
           ))}
-          <button
-            title="add quiz"
-            className="bg-primary p-2 rounded flex flex-row items-center justify-center "
-            onClick={() => setIsAddOpen(true)}
-          >
-            <FaPlus size={24} />
-          </button>
         </div>
       </div>
+
+      {/* Modal */}
       {isAddOpen && (
         <Modal
-          title="Add QuestionBank"
+          title="Add Question Bank"
           setIsOpen={setIsAddOpen}
           isOpen={isAddOpen}
           child={

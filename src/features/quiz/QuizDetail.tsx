@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAddQuestionsMutation, useGetQuizByIdQuery } from "./quizApi";
 import { useGetAllQBanksQuery } from "../qbank/qBankApi";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FiMinusCircle } from "react-icons/fi";
+import { IoArrowBack } from "react-icons/io5";
 
 export const QuizDetail = () => {
   const { quizId } = useParams<{ quizId: string | undefined }>();
-  const { data: quiz, refetch } = useGetQuizByIdQuery(quizId); // Refetch after adding/removing
+  const navigate = useNavigate();
+  const { data: quiz, refetch } = useGetQuizByIdQuery(quizId);
   const { data: questionBanks } = useGetAllQBanksQuery();
-  const [addQuestions] = useAddQuestionsMutation();
+  const [addQuestions, { isLoading: isAdding }] = useAddQuestionsMutation();
   const [selectedQuestions, setSelectedQuestions] = useState<
     { _id: string; text: string }[]
   >([]);
@@ -27,11 +29,9 @@ export const QuizDetail = () => {
   const handleQuestionSelect = (questionId: string, questionText: string) => {
     setSelectedQuestions((prev) => {
       const isSelected = prev.some((q) => q._id === questionId);
-      if (isSelected) {
-        return prev.filter((q) => q._id !== questionId); // Remove if already selected
-      } else {
-        return [...prev, { _id: questionId, text: questionText }]; // Add if not selected
-      }
+      return isSelected
+        ? prev.filter((q) => q._id !== questionId)
+        : [...prev, { _id: questionId, text: questionText }];
     });
   };
 
@@ -45,58 +45,49 @@ export const QuizDetail = () => {
 
   const handleAddQuestions = async () => {
     if (!quizId || selectedQuestions.length === 0) return;
-
-    const questionIds = { questionIds: selectedQuestions.map((q) => q._id) }; // Extract IDs for the backend
+    const questionIds = { questionIds: selectedQuestions.map((q) => q._id) };
 
     try {
-      // console.log("IDS::", questionIds);
-
       await addQuestions({ quizId, questionIds }).unwrap();
       toast.success("Questions added successfully!");
-      setSelectedQuestions([]); // Clear the selected questions
-      refetch(); // Refresh quiz data
-    } catch (error) {
+      setSelectedQuestions([]);
+      refetch();
+    } catch {
       toast.error("Failed to add questions.");
     }
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-primary">
+    <div className="flex flex-col md:flex-row min-h-screen bg-background text-text-primary">
       {/* Sidebar - Question Banks */}
-      <div className="w-full md:w-1/3 bg-secondary border-b md:border-b-0 md:border-r p-4 overflow-y-auto">
-        <div className="text-xl font-semibold mb-2">Question Banks</div>
+      <aside className="w-full md:w-1/3 bg-secondary border-b md:border-b-0 md:border-r p-4 overflow-y-auto">
+        <h2 className="section-heading">📚 Question Banks</h2>
         {questionBanks?.length ? (
           questionBanks.map((bank) => (
             <div
               key={bank._id}
-              className="border p-2 my-2 bg-primary rounded-lg"
+              className="mb-3 rounded-lg bg-highlight/40 shadow-sm"
             >
               <div
-                className="flex justify-between items-center cursor-pointer py-2"
+                className="flex justify-between items-center px-3 py-2 cursor-pointer hover:bg-highlight/60 rounded-t-lg"
                 onClick={() => handleToggleBank(bank._id)}
               >
-                <span className="font-medium text-sm md:text-base">
-                  {bank.title}
-                </span>
+                <span className="font-medium text-sm">{bank.title}</span>
                 {expandedBanks.includes(bank._id) ? (
                   <IoIosArrowDown />
                 ) : (
                   <IoIosArrowForward />
                 )}
               </div>
-
               {expandedBanks.includes(bank._id) && (
-                <ul className="ml-4">
+                <ul className="px-4 pb-2 space-y-1">
                   {bank.questions.map((q) => (
-                    <li
-                      key={q._id}
-                      className="flex items-center gap-2 py-1 text-xs md:text-sm"
-                    >
+                    <li key={q._id} className="flex gap-2 text-sm">
                       <input
-                        title="select"
+                        title="Select"
                         type="checkbox"
                         checked={selectedQuestions.some(
-                          (selected) => selected._id === q._id
+                          (sel) => sel._id === q._id
                         )}
                         onChange={() => handleQuestionSelect(q._id, q.text)}
                       />
@@ -108,88 +99,97 @@ export const QuizDetail = () => {
             </div>
           ))
         ) : (
-          <p>No question banks available.</p>
+          <p className="text-sm text-text-secondary">
+            No question banks available.
+          </p>
         )}
-      </div>
+      </aside>
 
-      <div className="w-full md:w-2/3 p-4 md:p-6 overflow-y-auto">
-        <h1 className="text-lg md:text-xl font-bold">
-          {quiz?.title} - Selected Questions
-        </h1>
+      {/* Main Content */}
+      <main className="w-full md:w-2/3 p-4 md:p-6 overflow-y-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              title="Back"
+              className="text-text-secondary hover:text-accent transition"
+            >
+              <IoArrowBack size={20} />
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold">{quiz?.title}</h1>
+              <p className="text-sm text-text-secondary">
+                Manage and add questions to this quiz
+              </p>
+            </div>
+          </div>
+        </div>
 
-        {/* Existing Questions in the Quiz */}
-        <div className="mt-4">
-          <h2 className="text-base md:text-lg font-semibold">
-            Existing Questions in Quiz
-          </h2>
+        {/* Existing Questions */}
+        <section>
+          <h2 className="text-lg font-semibold mb-2">📌 Existing Questions</h2>
           {quiz?.questions?.length ? (
-            <ul className="border rounded-lg shadow-md p-2 bg-highlight/40">
+            <ul className="bg-highlight/40 border rounded-lg divide-y text-sm shadow-sm">
               {quiz.questions.map((q) => (
-                <li
-                  key={q._id}
-                  className="flex justify-between items-center p-2 md:p-3 border-b border-secondary last:border-none text-sm md:text-base"
-                >
-                  <span className="break-words">{q.text}</span>
+                <li key={q._id} className="p-3">
+                  {q.text}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-center p-4 text-gray-500 text-sm md:text-base">
+            <p className="text-sm text-text-secondary">
               No questions in this quiz yet.
             </p>
           )}
-        </div>
+        </section>
 
-        {/* Newly Selected Questions */}
-        <div className="mt-4">
-          <h2 className="text-base md:text-lg font-semibold">
-            Newly Selected Questions
-          </h2>
+        {/* Selected Questions */}
+        <section>
+          <h2 className="text-lg font-semibold mb-2">➕ Selected Questions</h2>
           {selectedQuestions.length > 0 ? (
-            <ul className="border rounded-lg shadow-md p-2 bg-highlight/40">
+            <ul className="bg-highlight/40 border rounded-lg divide-y shadow-sm text-sm">
               {selectedQuestions.map((q) => (
                 <li
                   key={q._id}
-                  className="flex justify-between items-center p-2 md:p-3 border-b border-secondary last:border-none"
+                  className="flex justify-between items-center p-3"
                 >
-                  <span className="break-words text-sm md:text-base">
-                    {q.text}
-                  </span>
+                  <span>{q.text}</span>
                   <button
-                    title="remove"
+                    title="Remove"
                     onClick={() => handleRemoveSelected(q._id)}
-                    className="ml-2 flex-shrink-0"
+                    className="text-red-500 hover:text-red-700"
                   >
-                    <FiMinusCircle size={20} className="md:w-6 md:h-6" />
+                    <FiMinusCircle size={18} />
                   </button>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-center p-4 text-gray-500 text-sm md:text-base">
+            <p className="text-sm text-text-secondary">
               No newly selected questions.
             </p>
           )}
-        </div>
+        </section>
 
-        {/* Buttons */}
-        <div className="mt-4 flex gap-2">
+        {/* Actions */}
+        <div className="flex justify-end gap-2">
           <button
-            className="bg-highlight/50 p-2 rounded ml-auto text-sm md:text-base"
             onClick={handleRemoveAll}
+            className="btn-outline"
             disabled={selectedQuestions.length === 0}
           >
-            Remove All
+            Clear All
           </button>
           <button
-            className="bg-accent/80 p-2 rounded text-sm md:text-base"
             onClick={handleAddQuestions}
-            disabled={selectedQuestions.length === 0}
+            className="btn-primary disabled:opacity-50"
+            disabled={selectedQuestions.length === 0 || isAdding}
           >
-            Add
+            {isAdding ? "Adding..." : "Add to Quiz"}
           </button>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

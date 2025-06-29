@@ -4,15 +4,21 @@ import { CiLogout } from "react-icons/ci";
 import { adminNavbar, facultyNavbar, studentNavbar } from "../utils/navbar";
 import { useState } from "react";
 import { IoMenu } from "react-icons/io5";
+import { Modal } from "./Modal";
+import { LogoutForm } from "../features/user/LogoutForm";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const loggedUser = getUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogoutClick = () => {
+    setIsLoggingOut(true);
     logoutUser();
     navigate("/");
+    setIsLoggingOut(false);
   };
 
   const navItems =
@@ -22,65 +28,87 @@ export const Navbar = () => {
       ? facultyNavbar
       : studentNavbar;
 
+  if (!loggedUser) return null;
+  if (["/", "/register"].includes(location.pathname)) return null;
   return (
-    <div className="bg-primary p-3 border-b border-black">
-      <div className="flex items-center justify-between">
-        <span className="font-bold text-2xl">{loggedUser.username}</span>
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="page-container py-4 flex items-center justify-between">
+        <span className="text-xl font-semibold text-black">
+          {loggedUser.username}
+        </span>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex divide-x-2 divide-secondary">
+        <nav className="hidden md:flex gap-4">
           {navItems.map((item) => (
             <button
               onClick={() => navigate(item.path)}
-              className={`capitalize hover:text-accent hover:font-bold px-2 transition ${
-                location.pathname === item.path && "text-accent"
-              }`}
               key={item.path}
+              className={`capitalize px-3 py-1 rounded-lg transition hover:text-accent hover:bg-gray-100 ${
+                location.pathname === item.path
+                  ? "text-accent font-semibold"
+                  : "text-gray-700"
+              }`}
             >
               {item.name}
             </button>
           ))}
-        </div>
+        </nav>
 
+        {/* Action Buttons */}
         <div className="flex items-center gap-2">
           <button
-            className="hover:bg-accent hover transition rounded p-1"
-            onClick={handleLogoutClick}
-            title="logout"
+            className="hover:bg-gray-100 transition rounded-full p-2"
+            onClick={() => setIsLogoutOpen(true)}
+            title="Logout"
           >
-            <CiLogout className="stroke-[1.25]" size={24} />
+            <CiLogout className="stroke-[1.25]" size={22} />
           </button>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden hover:bg-accent hover transition rounded p-1"
+            className="md:hidden hover:bg-gray-100 transition rounded-full p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            title="menu"
+            title="Menu"
           >
-            <IoMenu size={24} />
+            <IoMenu size={22} />
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden mt-2 flex flex-col gap-2 items-start border-t border-black py-2">
+        <nav className="md:hidden bg-white border-t border-gray-200 py-2 px-4">
           {navItems.map((item) => (
             <button
               onClick={() => {
                 navigate(item.path);
                 setIsMenuOpen(false);
               }}
-              className={`capitalize hover:text-accent hover:font-bold px-2 py-1 transition ${
-                location.pathname === item.path && "text-accent"
-              }`}
               key={item.path}
+              className={`block w-full text-left capitalize px-2 py-2 rounded-lg transition hover:text-accent hover:bg-gray-100 ${
+                location.pathname === item.path
+                  ? "text-accent font-semibold"
+                  : "text-gray-800"
+              }`}
             >
               {item.name}
             </button>
           ))}
-        </div>
+        </nav>
       )}
-    </div>
+      {isLogoutOpen && (
+        <Modal
+          title="Logout"
+          setIsOpen={setIsLogoutOpen}
+          child={
+            <LogoutForm
+              logoutHandler={handleLogoutClick}
+              closeModal={() => setIsLogoutOpen(false)}
+              isLoading={isLoggingOut}
+            />
+          }
+        />
+      )}
+    </header>
   );
 };

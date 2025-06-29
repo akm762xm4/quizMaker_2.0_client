@@ -1,88 +1,147 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { RegisterCredentials, useRegisterMutation } from "./authApi";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { setToken } from "../../utils/localStorage";
 import { ErrorI } from "../../types";
+import { useCheckExistingRequestQuery } from "../approveRequest/requestApi";
+import { useState, useEffect } from "react";
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
-  const [signUp] = useRegisterMutation();
-  const { register, handleSubmit } = useForm<RegisterCredentials>();
+  const [signUp, { isLoading }] = useRegisterMutation();
+  const { register, handleSubmit, watch } = useForm<RegisterCredentials>();
+  const [username, setUsername] = useState("");
+
+  const selectedRole = watch("role");
+  const watchedUsername = watch("username");
+
+  // Only run the query when we have a username and role is faculty
+  const shouldCheckRequest = username && selectedRole === "faculty";
+
+  const { data: existingRequest } = useCheckExistingRequestQuery(username, {
+    skip: !shouldCheckRequest,
+  });
+
+  useEffect(() => {
+    if (watchedUsername && selectedRole === "faculty") {
+      setUsername(watchedUsername);
+    } else if (selectedRole !== "faculty") {
+      setUsername("");
+    }
+  }, [watchedUsername, selectedRole]);
+
   const onSubmit: SubmitHandler<RegisterCredentials> = async (values) => {
     if (!values.username || !values.password || !values.role) {
-      toast.error("fill all the fields!");
+      toast.error("Please fill in all fields");
       return;
     }
+
+    // Check if user already has a faculty request
+    if (values.role === "faculty" && existingRequest?.hasRequest) {
+      toast.error(existingRequest.message);
+      return;
+    }
+
     try {
-      await signUp(values)
-        .unwrap()
-        .then((res) => {
-          if (res?.user?.role) {
-            setToken(res?.user?.token);
-            let role = res?.user?.role;
-            switch (role) {
-              case "admin":
-                navigate("/admin");
-                break;
-              case "faculty":
-                navigate("/faculty");
-                break;
-              default:
-                navigate("/student");
-                break;
-            }
-          }
-          toast.success(res.message);
-        });
+      const res = await signUp(values).unwrap();
+      toast.success(res.message);
+      if (res?.user?.role) {
+        setToken(res.user.token);
+        const role = res.user.role;
+        switch (role) {
+          case "admin":
+            navigate("/admin");
+            break;
+          case "faculty":
+            navigate("/faculty");
+            break;
+          default:
+            navigate("/student");
+            break;
+        }
+      }
     } catch (error) {
       const err = error as ErrorI;
       toast.error(err?.data?.error);
     }
   };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2 bg-highlight/40 p-4 rounded-lg shadow-md">
-        <span className="flex flex-col md:flex-row gap-2 text-sm md:text-base">
-          <label htmlFor="username">Username</label>
+    <div className="flex items-center justify-center bg-white">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6 bg-white w-full rounded-xl p-4 sm:p-6 sm:border sm:border-gray-200 shadow-md"
+      >
+        <div className="space-y-1">
+          <label htmlFor="username" className="form-label">
+            Username
+          </label>
           <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="username"
             type="text"
+            placeholder="Enter your username"
+            className="form-input"
             {...register("username")}
           />
-        </span>
-        <span className="flex flex-col md:flex-row gap-2 text-sm md:text-base">
-          <label htmlFor="password">Password</label>
+        </div>
+
+        <div className="space-y-1">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
           <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
             id="password"
             type="password"
+            placeholder="Enter your password"
+            className="form-input"
             {...register("password")}
           />
-        </span>
-        <span className="flex gap-2 text-sm md:text-base">
-          <label htmlFor="role">Role</label>
-          <select
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
-            id="role"
-            {...register("role")}
-          >
-            <option defaultChecked value="faculty">
-              Faculty
-            </option>
+        </div>
+
+        <div className="space-y-1">
+          <label htmlFor="role" className="form-label">
+            Role
+          </label>
+          <select id="role" className="form-input" {...register("role")}>
+            <option value="faculty">Faculty</option>
             <option value="student">Student</option>
           </select>
-        </span>
-        <span className="ml-auto flex gap-1 text-sm md:text-base">
-          <button className="bg-highlight p-1 rounded" type="reset">
+        </div>
+
+        {selectedRole === "faculty" && existingRequest?.hasRequest && (
+          <div
+            className={`p-3 rounded-lg text-sm ${
+              existingRequest.status === "pending"
+                ? "bg-yellow-50 text-yellow-800 border border-yellow-200"
+                : existingRequest.status === "approved"
+                ? "bg-green-50 text-green-800 border border-green-200"
+                : "bg-red-50 text-red-800 border border-red-200"
+            }`}
+          >
+            {existingRequest.message}
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row justify-between gap-2">
+          <button
+            type="reset"
+            className="btn-outline w-full sm:w-auto text-center"
+          >
             Reset
           </button>
-          <button className="bg-accent p-1 rounded" type="submit">
-            Submit
+          <button
+            type="submit"
+            className="btn-primary w-full sm:w-auto text-center disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={
+              isLoading ||
+              (selectedRole === "faculty" && existingRequest?.hasRequest)
+            }
+          >
+            {isLoading ? "Registering..." : "Register"}
           </button>
-        </span>
-      </div>
-    </form>
+        </div>
+      </form>
+    </div>
   );
 };

@@ -1,4 +1,4 @@
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Toggle from "../../Components/Toggle";
 import {
   useDeleteUserMutation,
@@ -15,19 +15,18 @@ import { Badge } from "../../Components/Badge";
 interface UserItemProps {
   user: UserI;
 }
+
 export const UserItem: React.FC<UserItemProps> = ({ user }) => {
-  const [deleteUser] = useDeleteUserMutation();
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const [toggleUser] = useToggleUserMutation();
-  const [isHovering, setIsHovering] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [hovering, setHovering] = useState(false);
 
   const onToggleChange = async () => {
     await toggleUser(user._id)
       .unwrap()
-      .then((res) => {
-        toast.success(res.message);
-      });
+      .then((res) => toast.success(res.message));
   };
 
   const deleteUserHandler = async () => {
@@ -38,34 +37,52 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
 
   return (
     <>
+      {/* Card */}
       <div
-        onMouseOver={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-        className="flex flex-row items-center justify-between bg-primary p-2 rounded text-sm md:text-base"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 flex justify-between items-center transition-shadow hover:shadow-md"
       >
-        <span className="flex flex-col items-start gap-1">
-          <span className="text-lg md:text-xl">{user.username}</span>
+        {/* User Info */}
+        <div className="flex flex-col gap-1">
+          <span className="font-semibold text-gray-900 text-lg">
+            {user.username}
+          </span>
           <Badge role={user.role} />
-        </span>
+        </div>
 
-        <span
-          className={`flex flex-row items-center gap-2 md:gap-4 ${
-            !isHovering && "flex md:hidden"
-          }`}
+        {/* Actions */}
+        <div
+          className={`flex items-center gap-3 ${
+            !hovering
+              ? "md:invisible md:opacity-0"
+              : "md:visible md:opacity-100"
+          } transition-opacity duration-300`}
         >
+          {/* Edit */}
           <button
             onClick={() => setIsEditOpen(true)}
-            title="edit"
-            className="text-xl md:text-2xl"
+            title="Edit"
+            className="text-gray-600 hover:text-accent transition"
           >
-            <MdEditNote size={24} />
+            <MdEditNote size={20} />
           </button>
-          <button onClick={() => setIsDeleteOpen(true)} title="delete">
-            <MdDelete size={24} />
+
+          {/* Delete */}
+          <button
+            onClick={() => setIsDeleteOpen(true)}
+            title="Delete"
+            className="text-gray-600 hover:text-red-500 transition"
+          >
+            <MdDelete size={20} />
           </button>
+
+          {/* Toggle */}
           <Toggle checked={user.isActive} onChange={onToggleChange} />
-        </span>
+        </div>
       </div>
+
+      {/* Modals */}
       {isEditOpen && (
         <Modal
           title="Edit User"
@@ -83,6 +100,7 @@ export const UserItem: React.FC<UserItemProps> = ({ user }) => {
               deleteHandler={deleteUserHandler}
               closeModal={() => setIsDeleteOpen(false)}
               name={user.username}
+              isLoading={isDeleting}
             />
           }
           setIsOpen={setIsDeleteOpen}

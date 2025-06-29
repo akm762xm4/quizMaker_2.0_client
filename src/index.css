@@ -1,16 +1,81 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-*{
-  font-family: "Montserrat", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
+@layer base {
+  html {
+    font-family: "DM Sans", sans-serif;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-white text-text-primary text-sm sm:text-base;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold text-text-primary leading-snug;
+  }
+
+  a {
+    @apply text-accent hover:underline transition duration-200;
+  }
+
+  button {
+    @apply font-medium transition duration-200;
+  }
+
+  .btn-solid {
+    @apply px-4 py-1.5 rounded-md text-sm font-medium transition;
+  }
+
+  .btn-outline {
+    @apply px-4 py-1.5 rounded-md border border-text-secondary text-sm text-text-secondary hover:border-accent hover:text-accent transition;
+  }
+
+  .form-group {
+    @apply flex flex-col gap-1;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-text-secondary;
+  }
+
+  .form-input {
+    @apply p-2 bg-highlight/40 rounded border border-text-secondary outline-none focus:border-accent transition;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  textarea,
+  select {
+    @apply w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent placeholder-gray-400;
+  }
 }
 
-*{
-  margin: 0px;
-  padding: 0px;
+@layer components {
+  .btn-primary {
+    @apply bg-accent text-white rounded-xl px-4 py-2 text-sm sm:text-base font-medium hover:bg-purple-700 transition;
+  }
+
+  .card {
+    @apply bg-white shadow-md rounded-2xl p-4 sm:p-6 border border-gray-100;
+  }
+
+  .page-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section-heading {
+    @apply text-xl sm:text-2xl font-bold mb-4;
+  }
 }

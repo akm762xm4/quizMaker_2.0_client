@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ErrorI } from "../../types";
 import { RegisterCredentials } from "../auth/authApi";
 import { useCreateUserMutation } from "./usersApi";
@@ -10,13 +10,14 @@ interface AddUserFormProps {
 
 export const AddUserForm: React.FC<AddUserFormProps> = ({ closeModal }) => {
   const { register, handleSubmit } = useForm<RegisterCredentials>();
-  const [createUser] = useCreateUserMutation();
+  const [createUser, { isLoading: isCreating }] = useCreateUserMutation();
 
   const onSubmit: SubmitHandler<RegisterCredentials> = async (values) => {
     if (!values.username || !values.password || !values.role) {
-      toast.error("fill all the fields!");
+      toast.error("Fill all the fields!");
       return;
     }
+
     try {
       await createUser(values)
         .unwrap()
@@ -29,50 +30,52 @@ export const AddUserForm: React.FC<AddUserFormProps> = ({ closeModal }) => {
       toast.error(err?.data?.error);
     }
   };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2 bg-highlight/40 p-4 rounded-lg shadow-md">
-        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
-          <label htmlFor="username">Username</label>
-          <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
-            id="username"
-            type="text"
-            {...register("username")}
-          />
-        </span>
+      <div className="card flex flex-col gap-4">
+        {/* Username */}
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
+          <label htmlFor="username" className="text-muted-foreground md:w-28">
+            Username
+          </label>
+          <input id="username" type="text" {...register("username")} />
+        </div>
 
-        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
-          <label htmlFor="password">Password</label>
-          <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
-            id="password"
-            type="password"
-            {...register("password")}
-          />
-        </span>
+        {/* Password */}
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
+          <label htmlFor="password" className="text-muted-foreground md:w-28">
+            Password
+          </label>
+          <input id="password" type="password" {...register("password")} />
+        </div>
 
-        <span className="flex gap-2 flex-col md:flex-row text-sm md:text-base">
-          <label htmlFor="role">Role</label>
-          <select
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
-            id="role"
-            {...register("role")}
-          >
+        {/* Role */}
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
+          <label htmlFor="role" className="text-muted-foreground md:w-28">
+            Role
+          </label>
+          <select id="role" {...register("role")}>
             <option defaultChecked value="faculty">
               Faculty
             </option>
             <option value="student">Student</option>
           </select>
-        </span>
-        <span className="ml-auto flex gap-1 text-sm md:text-base">
-          <button className="bg-highlight p-1 rounded" type="reset">
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-end gap-2 mt-4">
+          <button type="reset" className="btn-outline">
             Reset
           </button>
-          <button className="bg-accent p-1 rounded" type="submit">
-            Submit
+          <button
+            type="submit"
+            className="btn-primary disabled:opacity-50"
+            disabled={isCreating}
+          >
+            {isCreating ? "Creating..." : "Submit"}
           </button>
-        </span>
+        </div>
       </div>
     </form>
   );

@@ -6,7 +6,7 @@ import { DeleteForm } from "../user/DeleteForm";
 import { useNavigate } from "react-router-dom";
 import { AddQuizForm } from "./AddQuizForm";
 import Toggle from "../../Components/Toggle";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ErrorI } from "../../types";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { getUser } from "../../utils/localStorage";
@@ -17,7 +17,7 @@ interface QuizItemProps {
 }
 
 export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
-  const [deleteQuiz] = useDeleteQuizMutation();
+  const [deleteQuiz, { isLoading: isDeleting }] = useDeleteQuizMutation();
   const [isModalOpen, setIsModalOpen] = useState<boolean | false>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -69,77 +69,93 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
 
   return (
     <>
-      <div className="bg-primary p-2 rounded flex flex-row items-center justify-between">
-        <div className="flex flex-col items-start">
-          <span className="text-lg md:text-xl font-bold">{quiz.title}</span>
+      <div className="card flex flex-col md:flex-row items-start md:items-center justify-between gap-3 relative">
+        {/* Quiz Info */}
+        <div className="flex flex-col gap-1">
+          <h3 className="text-lg md:text-xl font-semibold text-text-primary">
+            {quiz.title}
+          </h3>
           {loggedUser.role === "admin" && (
-            <span className="text-sm md:text-base text-gray-600">
-              createdBy : {quiz?.createdBy?.username}
-            </span>
+            <p className="text-sm text-text-secondary">
+              Created by:{" "}
+              <span className="font-medium">{quiz?.createdBy?.username}</span>
+            </p>
           )}
         </div>
-        {loggedUser.role === "student" && (
-          <button
-            onClick={() => navigate(`/student/${quiz._id}`)}
-            title="attemp"
-          >
-            <FaPlay size={24} />
-          </button>
-        )}
-        <div
-          className={`relative ${loggedUser.role === "student" && "hidden"}`}
-        >
-          {/* Three-dot button */}
-          <button
-            title="context"
-            onClick={() => setIsVisible(!isVisible)}
-            className="p-2 rounded-full hover:bg-gray-200 focus:outline-none"
-          >
-            <HiDotsHorizontal className="w-5 h-5 text-gray-600" />
-          </button>
 
-          {/* Context menu */}
-          {isVisible && (
-            <div
-              id="context-menu"
-              className="absolute top-10 right-0 bg-white/50 backdrop-blur-xl divide-y border shadow-xl shadow-primary/20 rounded-md z-50 flex flex-col w-max  "
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2 ml-auto">
+          {/* Student Play Button */}
+          {loggedUser.role === "student" && (
+            <button
+              onClick={() => navigate(`/student/${quiz._id}`)}
+              title="Attempt Quiz"
+              className="p-2 rounded bg-accent text-white hover:bg-purple-700 transition"
             >
-              <span className="p-2 flex items-center justify-around text-sm md:text-base">
-                <span>Toggle</span>
-                <Toggle checked={quiz.enabled} onChange={handleToggleQuiz} />
-              </span>
+              <FaPlay size={18} />
+            </button>
+          )}
+
+          {/* Faculty/Admin Actions */}
+          {loggedUser.role !== "student" && (
+            <div className="relative">
               <button
-                className="p-2 hover:text-accent text-sm md:text-base"
-                onClick={() => {
-                  setIsVisible(false);
-                  setIsEditOpen(true);
-                }}
+                title="More Options"
+                onClick={() => setIsVisible(!isVisible)}
+                className="p-2 rounded hover:bg-muted transition"
               >
-                Edit
+                <HiDotsHorizontal className="text-text-secondary" size={18} />
               </button>
-              <button
-                className="p-2 hover:text-accent text-sm md:text-base"
-                onClick={() => {
-                  setIsVisible(false);
-                  handleTitleClick();
-                }}
-              >
-                {loggedUser.role === "admin" && "View Quiz Info"}
-                {loggedUser.role === "faculty" && "Manage Questions"}
-              </button>
-              <button
-                className="p-2 hover:text-accent text-sm md:text-base"
-                onClick={() => {
-                  setIsVisible(false);
-                  setIsDeleteOpen(true);
-                }}
-              >
-                Delete
-              </button>
+
+              {isVisible && (
+                <div
+                  id="context-menu"
+                  className="absolute top-10 right-0 bg-white border rounded-md shadow-modal z-50 min-w-[12rem] overflow-hidden"
+                >
+                  <div className="flex items-center justify-between px-4 py-2 text-sm text-text-primary">
+                    <span>Enabled</span>
+                    <Toggle
+                      checked={quiz.enabled}
+                      onChange={handleToggleQuiz}
+                    />
+                  </div>
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm hover:text-accent transition"
+                    onClick={() => {
+                      setIsVisible(false);
+                      setIsEditOpen(true);
+                    }}
+                  >
+                    Rename
+                  </button>
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm hover:text-accent transition"
+                    onClick={() => {
+                      setIsVisible(false);
+                      handleTitleClick();
+                    }}
+                  >
+                    {loggedUser.role === "admin"
+                      ? "View Quiz Info"
+                      : "Manage Questions"}
+                  </button>
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-danger hover:bg-red-50"
+                    onClick={() => {
+                      setIsVisible(false);
+                      setIsDeleteOpen(true);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
+
+      {/* Modals */}
       {isModalOpen && (
         <Modal
           title={quiz.title}
@@ -156,6 +172,7 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
               deleteHandler={handleDeleteQuiz}
               name={quiz.title}
               closeModal={() => setIsDeleteOpen(false)}
+              isLoading={isDeleting}
             />
           }
         />
@@ -167,7 +184,7 @@ export const QuizItem: React.FC<QuizItemProps> = ({ quiz }) => {
           child={
             <AddQuizForm
               closeModal={() => setIsEditOpen(false)}
-              isEdit={true}
+              isEdit
               quiz={quiz}
             />
           }

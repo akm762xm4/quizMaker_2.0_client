@@ -96,12 +96,13 @@ export interface QuestionI {
 
 export interface AddQuestionI {
   text: string;
+  category: string;
+  correctOption: number | string;
   op1: string;
   op2: string;
   op3: string;
   op4: string;
-  correctOption: string;
-  category: string;
+  options?: string[];
 }
 
 export const {

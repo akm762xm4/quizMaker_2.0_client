@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { RegisterCredentials } from "../auth/authApi";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ErrorI } from "../../types";
 import { useEditUserMutation, UserI } from "./usersApi";
 
@@ -15,15 +15,15 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
   user,
 }) => {
   const { register, handleSubmit, setValue } = useForm<RegisterCredentials>();
-  const [editUser] = useEditUserMutation();
+  const [editUser, { isLoading: isEditing }] = useEditUserMutation();
 
   const onSubmit: SubmitHandler<RegisterCredentials> = async (values) => {
     if (!values.username || !values.role) {
-      toast.error("fill all the fields!");
+      toast.error("Fill all the fields!");
       return;
     }
     try {
-      await editUser({ userId: user?._id, patch: values })
+      await editUser({ userId: user._id, patch: values })
         .unwrap()
         .then((res) => {
           toast.success(res.message);
@@ -36,42 +36,45 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
   };
 
   useEffect(() => {
-    setValue("username", user!.username);
-    setValue("role", user!.role);
-  });
+    setValue("username", user.username);
+    setValue("role", user.role);
+  }, [setValue, user]);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2 bg-highlight/40 p-4 rounded-lg shadow-md">
-        <span className="flex gap-2 text-sm md:text-base flex-col md:flex-row">
-          <label htmlFor="username">Username</label>
-          <input
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
-            id="username"
-            type="text"
-            {...register("username")}
-          />
-        </span>
-        <span className="flex gap-2 text-sm md:text-base flex-col md:flex-row">
-          <label htmlFor="role">Role</label>
-          <select
-            className="bg-highlight/50 p-1 outline-none rounded md:ml-auto"
-            id="role"
-            {...register("role")}
-          >
-            <option defaultChecked value="faculty">
-              Faculty
-            </option>
-            <option value="student">Student</option>
-          </select>
-        </span>
-        <span className="ml-auto flex gap-1 text-sm md:text-base">
-          <button className="bg-highlight p-1 rounded" type="reset">
-            Reset
-          </button>
-          <button className="bg-accent p-1 rounded" type="submit">
-            Submit
-          </button>
-        </span>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="form-group">
+        <label htmlFor="username" className="form-label">
+          Username
+        </label>
+        <input
+          id="username"
+          type="text"
+          {...register("username")}
+          className="form-input"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="role" className="form-label">
+          Role
+        </label>
+        <select id="role" {...register("role")} className="form-input">
+          <option value="faculty">Faculty</option>
+          <option value="student">Student</option>
+        </select>
+      </div>
+
+      <div className="flex justify-end gap-3">
+        <button type="reset" className="btn-outline">
+          Reset
+        </button>
+        <button
+          type="submit"
+          className="btn-solid bg-accent text-white hover:opacity-90 disabled:opacity-50"
+          disabled={isEditing}
+        >
+          {isEditing ? "Updating..." : "Update"}
+        </button>
       </div>
     </form>
   );

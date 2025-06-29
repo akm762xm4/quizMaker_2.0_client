@@ -4,13 +4,13 @@ import { BrowserRouter } from "react-router-dom";
 import { App } from "./App.tsx";
 import { Provider } from "react-redux";
 import { store } from "./app/store.ts";
-import { ToastContainer } from "react-toastify";
+import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <BrowserRouter>
+      <Toaster />
       <App />
-      <ToastContainer toastClassName="shadow-2xl shadow-highlight bg-secondary" />
     </BrowserRouter>
   </Provider>
 );

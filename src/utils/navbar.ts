@@ -1,8 +1,9 @@
 // import { IconType } from "react-icons";
 
 export const adminNavbar: Navbar[] = [
+  { path: "/admin", name: "dashboard" },
   {
-    path: "/admin",
+    path: "/admin/users",
     name: "users",
   },
   {
@@ -24,8 +25,9 @@ export const adminNavbar: Navbar[] = [
 ];
 
 export const facultyNavbar: Navbar[] = [
+  { path: "/faculty", name: "dashboard" },
   {
-    path: "/faculty",
+    path: "/faculty/quizzes",
     name: "quizzes",
   },
   {
@@ -39,7 +41,8 @@ export const facultyNavbar: Navbar[] = [
 ];
 
 export const studentNavbar: Navbar[] = [
-  { path: "/student", name: "quizzes" },
+  { path: "/student", name: "dashboard" },
+  { path: "/student/quizzes", name: "quizzes" },
   { path: "/student/result", name: "results" },
 ];
 

@@ -11,6 +11,8 @@ import { GetQuizzes } from "../Components/student/GetQuizzes";
 import { QuizDetail } from "../features/quiz/QuizDetail";
 import { Requests } from "../features/approveRequest/Requests";
 import QuizAttempt from "../Components/student/QuizAttempt";
+import { ProtectedRoute } from "../Components/ProtectedRoute";
+import { AdminDashboard, FacultyDashboard, StudentDashboard } from "../Components/Dashboard";
 
 const Routing = () => {
   const location = useLocation();
@@ -19,29 +21,35 @@ const Routing = () => {
       <Route path="/">
         <Route index={true} path="" element={<Auth />} />
       </Route>
-      //admin routes
+      <Route element={<ProtectedRoute roles={["admin"]} />}>
       <Route path="/admin/">
-        <Route path="" index={true} element={<Users />} />
+        <Route path="" index={true} element={<AdminDashboard />} />
+        <Route path="users" element={<Users />} />
         <Route path="quizzes" index={true} element={<QuizzesAdm />} />
         <Route path="qbs" element={<QuestionBanks />} />
         <Route path="results" element={<ResultsAdmin />} />
         <Route path="requests" element={<Requests />} />
       </Route>
-      //faculty routes
+      </Route>
+      <Route element={<ProtectedRoute roles={["faculty"]} />}>
       <Route path="/faculty/">
-        <Route index={true} element={<QuizzesFclty />} />
-        <Route path=":quizId" element={<QuizDetail />} />
+        <Route index={true} element={<FacultyDashboard />} />
+        <Route path="quizzes" element={<QuizzesFclty />} />
+        <Route path="quizzes/:quizId" element={<QuizDetail />} />
         <Route path="qbs/">
           <Route index={true} path="" element={<QuestionBanks />} />
           <Route path=":qBankId" element={<QBankPage />} />
         </Route>
         <Route path="results" element={<ResultsAdmin />} />
       </Route>
-      //student routes
+      </Route>
+      <Route element={<ProtectedRoute roles={["student"]} />}>
       <Route path="/student/">
-        <Route index={true} path="" element={<GetQuizzes />} />
+        <Route index={true} path="" element={<StudentDashboard />} />
+        <Route path="quizzes" element={<GetQuizzes />} />
         <Route path=":quizId" element={<QuizAttempt />} />
         <Route path="result" element={<ResultsStudent />} />
+      </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

@@ -7,8 +7,9 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { getToken, logoutUser } from "../utils/localStorage";
 
-// const baseUrl = "http://localhost:8000/api";
-const baseUrl = "https://quiz-maker-2-0-server.vercel.app/api";
+const baseUrl =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://quiz-maker-2-0-server.vercel.app/api";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: baseUrl,
@@ -25,10 +26,10 @@ const baseQueryWithAuth: BaseQueryFn<
   string | FetchArgs,
   unknown,
   unknown,
-  {},
+  object,
   FetchBaseQueryMeta
 > = async (args, api, extraOptions) => {
-  let results = await baseQuery(args, api, extraOptions);
+  const results = await baseQuery(args, api, extraOptions);
 
   if (results.error?.status === 401) {
     logoutUser();

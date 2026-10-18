@@ -53,10 +53,9 @@ The application will be available at `http://localhost:5173`
 
 ## Testing the Application
 
-You can test the deployed application using the following credentials:
+For a recruiter-friendly tour, select one of the **Admin demo**, **Faculty demo**, or **Student demo** cards on the sign-in screen. The selected account is prefilled for you.
 
-- Username: `jagin`
-- Password: `123`
+Before deploying, seed the demo workspace from the server project with `npm run demo:seed`. Configure `VITE_API_BASE_URL` and the `VITE_DEMO_*` values from `.env.example` in your client host. Use a distinct password for public demo accounts; their credentials are intentionally visible because they are resettable sample accounts.
 
 ## Project Structure
 

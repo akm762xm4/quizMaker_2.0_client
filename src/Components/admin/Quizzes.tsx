@@ -4,7 +4,6 @@ import { TbFilterSearch } from "react-icons/tb";
 import { Quiz, useGetAllQuizzesQuery } from "../../features/quiz/quizApi";
 import { NoResult } from "../NoResult";
 import { QuizItem } from "../../features/quiz/QuizItem";
-import { PageHeader } from "../PageHeader";
 import Loader from "../Loader";
 
 export const Quizzes = () => {
@@ -28,18 +27,11 @@ export const Quizzes = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <PageHeader
-        title="Quizzes Overview"
-        description="Browse and manage all quizzes created by faculties. Search or update any quiz easily."
-      />
+    <div className="dashboard-page">
+      <div className="mb-8"><p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">Programme catalogue</p><h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">All quizzes</h1><p className="mt-2 text-slate-600 dark:text-slate-300">A complete view of every assessment created by your faculty.</p></div>
 
       {/* Filter Section */}
-      <h2 className="text-2xl font-semibold px-4 md:px-[10%] mt-4 mb-2">
-        All Quizzes
-      </h2>
-
-      <div className="p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between bg-primary/20 rounded mb-4 mx-4 md:mx-[10%]">
+      <div className="surface-card mb-6 p-4">
         <div className="flex items-center gap-2 w-full md:max-w-md">
           <TbFilterSearch size={20} className="text-text-secondary" />
           <input
@@ -47,13 +39,13 @@ export const Quizzes = () => {
             placeholder="Search by quiz title"
             value={term}
             onChange={(e) => setTerm(() => e.target.value)}
-            className="bg-primary w-full outline-none rounded p-2 placeholder:text-sm text-sm border border-gray-200 focus:ring-2 focus:ring-accent"
+            className="bg-primary w-full outline-none rounded p-2 placeholder:text-sm text-sm border border-slate-200 focus:ring-2 focus:ring-accent"
           />
         </div>
       </div>
 
       {/* Quiz Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-[10%]">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {filteredQuizzes?.length ? (
           filteredQuizzes.map((quiz) => <QuizItem key={quiz._id} quiz={quiz} />)
         ) : (

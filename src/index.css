@@ -16,6 +16,8 @@
     @apply bg-white text-text-primary text-sm sm:text-base;
   }
 
+  html.dark body { @apply bg-slate-950 text-slate-50; }
+
   h1,
   h2,
   h3,
@@ -50,7 +52,26 @@
   }
 
   .form-input {
-    @apply p-2 bg-highlight/40 rounded border border-text-secondary outline-none focus:border-accent transition;
+    @apply p-2 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 rounded-lg border border-slate-200 dark:border-slate-700 outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 transition;
+  }
+
+  /* Custom checkbox — matches violet theme */
+  input[type="checkbox"].themed-checkbox {
+    @apply appearance-none h-5 w-5 rounded border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 transition cursor-pointer;
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  input[type="checkbox"].themed-checkbox:checked {
+    @apply border-accent bg-accent;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+  }
+  input[type="checkbox"].themed-checkbox:focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-white dark:ring-offset-slate-900;
+  }
+  input[type="checkbox"].themed-checkbox:indeterminate {
+    @apply border-accent bg-accent;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3crect x='3' y='7' width='10' height='2' rx='1'/%3e%3c/svg%3e");
   }
 
   input[type="text"],
@@ -58,9 +79,24 @@
   input[type="email"],
   textarea,
   select {
-    @apply w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent placeholder-gray-400;
+    @apply w-full px-3 py-2 text-sm sm:text-base border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder-slate-500;
   }
 }
+
+@layer components {
+  .sidebar-link { @apply flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold capitalize text-slate-600 transition hover:bg-violet-50 hover:text-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-slate-300 dark:hover:bg-violet-950/40 dark:hover:text-white; }
+  .sidebar-link-active { @apply bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300; }
+  .icon-button { @apply grid h-11 w-11 place-items-center rounded-xl text-slate-600 transition hover:bg-violet-50 hover:text-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-slate-300 dark:hover:bg-violet-950/40 dark:hover:text-white; }
+  .surface-card { @apply rounded-2xl border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50; }
+  .dashboard-page { @apply mx-auto max-w-7xl; }
+  .btn-dashboard { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-accent px-3 text-sm font-bold text-white transition hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent; }
+}
+
+html.dark .bg-white, html.dark .bg-primary { background-color: rgb(15 23 42); }
+html.dark .text-black, html.dark .text-text-primary { color: rgb(248 250 252); }
+html.dark .text-text-secondary { color: rgb(148 163 184); }
+html.dark .border-gray-200, html.dark .border-gray-100, html.dark .border-slate-200, html.dark .border-muted { border-color: rgb(51 65 85); }
+html.dark .bg-secondary, html.dark .bg-muted { background-color: rgb(30 41 59); }
 
 @layer components {
   .btn-primary {
@@ -68,7 +104,7 @@
   }
 
   .card {
-    @apply bg-white shadow-md rounded-2xl p-4 sm:p-6 border border-gray-100;
+    @apply bg-white shadow-md rounded-2xl p-4 sm:p-6 border border-slate-100;
   }
 
   .page-container {

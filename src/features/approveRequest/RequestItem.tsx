@@ -57,7 +57,7 @@ export const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
       <div
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
-        className="card flex items-center justify-between gap-4 border border-muted bg-highlight/40 hover:shadow-md transition"
+        className="surface-card flex items-center justify-between gap-4 p-4 sm:p-5 hover:shadow-md transition"
       >
         {/* Info Section */}
         <div className="flex flex-col gap-1">
@@ -69,10 +69,10 @@ export const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
               title={request.status}
               bg={
                 request.status === "pending"
-                  ? "bg-yellow-500/40"
+                  ? "bg-yellow-500/40 text-yellow-800 dark:text-yellow-200"
                   : request.status === "approved"
-                  ? "bg-green-500/40"
-                  : "bg-red-500/40"
+                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                  : "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
               }
             />
           </div>
@@ -100,7 +100,7 @@ export const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
               </button>
               <button
                 onClick={() => handleRequest("approve")}
-                className="bg-success text-white p-2 rounded hover:bg-green-600 transition"
+                className="bg-success text-white p-2 rounded hover:bg-emerald-600 transition"
                 title="Approve"
               >
                 <IoCheckmark size={18} />
@@ -114,7 +114,7 @@ export const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
               className={`p-2 text-white rounded transition ${
                 request.status === "rejected"
                   ? "bg-danger hover:bg-red-700"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  : "bg-accent hover:bg-violet-700"
               }`}
               title="Delete Request"
             >

@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { IQBank, useGetAllQBanksQuery } from "../../features/qbank/qBankApi";
 import { QBankItem } from "../../features/qbank/QBankItem";
-import { TbFilterSearch } from "react-icons/tb";
 import { NoResult } from "../NoResult";
-import { FaPlus } from "react-icons/fa";
 import { Modal } from "../Modal";
 import { AddQBankForm } from "../../features/qbank/AddQBankForm";
-import { PageHeader } from "../PageHeader";
 import Loader from "../Loader";
+import { FiPlus, FiSearch } from "react-icons/fi";
 
 export const QuestionBanks = () => {
   const { data: qBanks, isLoading, isFetching } = useGetAllQBanksQuery();
@@ -16,69 +14,68 @@ export const QuestionBanks = () => {
   const [term, setTerm] = useState("");
 
   useEffect(() => {
-    let filtered = qBanks;
-    filtered = filtered?.filter((qBank) =>
-      qBank.title.toLowerCase().includes(term.toLowerCase())
+    setFilteredQBanks(
+      qBanks?.filter((qb) => qb.title.toLowerCase().includes(term.toLowerCase()))
     );
-    setFilteredQBanks(filtered);
   }, [term, qBanks]);
 
-  if (isLoading || isFetching) {
-    return <Loader />;
-  }
-
-  if (!isLoading && !isFetching && !qBanks?.length) {
-    return <NoResult message="No question banks found." />;
-  }
+  if (isLoading || isFetching) return <Loader />;
+  if (!qBanks?.length) return <NoResult message="No question banks found." />;
 
   return (
     <>
-      <div className="flex flex-col min-h-screen">
-        {/* Filter + Add */}
-        <PageHeader
-          title="Question Banks"
-          description="Organize and manage reusable question banks. Create new or edit existing banks."
-        />
-
-        <div className="p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between bg-primary/20 rounded mb-4">
-          <div className="flex items-center gap-2 w-full md:max-w-md">
-            <TbFilterSearch size={20} className="text-text-secondary" />
-            <input
-              type="text"
-              placeholder="Search question bank..."
-              value={term}
-              onChange={(e) => setTerm(e.target.value)}
-              className="form-input placeholder:text-sm text-sm"
-            />
+      <div className="dashboard-page">
+        {/* Header */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
+              Content library
+            </p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Question Banks</h1>
+            <p className="mt-2 text-slate-600 dark:text-slate-300">
+              Reusable pools of questions used to build quizzes.
+            </p>
           </div>
           <button
-            className="btn-primary flex items-center gap-2"
+            type="button"
             onClick={() => setIsAddOpen(true)}
+            className="btn-dashboard self-start sm:self-auto"
           >
-            <FaPlus size={14} /> Add Question Bank
+            <FiPlus aria-hidden="true" size={18} />
+            Add Question Bank
           </button>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-[10%]">
-          {filteredQBanks?.map((qBank) => (
-            <QBankItem key={qBank._id} qBank={qBank} />
-          ))}
+        {/* Search */}
+        <div className="surface-card mb-6 flex items-center gap-3 p-3">
+          <FiSearch aria-hidden="true" size={18} className="text-slate-400" />
+          <input
+            type="search"
+            placeholder="Search question banks…"
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            className="!border-0 !bg-transparent !p-1 !ring-0 text-sm"
+            aria-label="Search question banks"
+          />
         </div>
+
+        {/* Grid */}
+        {filteredQBanks?.length ? (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {filteredQBanks.map((qBank) => (
+              <QBankItem key={qBank._id} qBank={qBank} />
+            ))}
+          </div>
+        ) : (
+          <NoResult message={`No question banks match "${term}".`} />
+        )}
       </div>
 
-      {/* Modal */}
       {isAddOpen && (
         <Modal
           title="Add Question Bank"
           setIsOpen={setIsAddOpen}
-          isOpen={isAddOpen}
-          child={
-            <AddQBankForm
-              closeModal={() => setIsAddOpen(false)}
-              isEdit={false}
-            />
-          }
+          child={<AddQBankForm closeModal={() => setIsAddOpen(false)} isEdit={false} />}
         />
       )}
     </>

@@ -9,8 +9,10 @@ export const Badge: React.FC<BadgeProps> = ({ role, title, bg }) => {
       {role && (
         <span
           className={`${
-            role === "faculty" ? "bg-blue-500" : "bg-green-500"
-          } text-sm md:text-base rounded w-min px-1 ring-2`}
+            role === "faculty"
+              ? "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300"
+              : "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+          } text-xs font-semibold rounded-full px-2.5 py-0.5`}
         >
           {role}
         </span>

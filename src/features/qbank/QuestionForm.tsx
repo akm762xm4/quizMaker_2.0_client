@@ -77,7 +77,7 @@ export const QuestionForm: React.FC<QuestionFormProps> = ({
             {[1, 2, 3, 4].map((num, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2 border border-gray-300 bg-primary p-1.5 rounded"
+                className="flex items-center gap-2 border border-slate-300 bg-primary p-1.5 rounded"
               >
                 <input
                   type="radio"

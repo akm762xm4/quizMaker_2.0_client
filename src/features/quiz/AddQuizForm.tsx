@@ -54,7 +54,7 @@ export const AddQuizForm: React.FC<AddQuizFormProps> = ({
       setValue("title", quiz?.title);
       setValue("maxTime", quiz?.maxTime);
     }
-  }, []);
+  }, [isEdit, quiz, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

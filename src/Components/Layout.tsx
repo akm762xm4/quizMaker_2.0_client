@@ -8,10 +8,16 @@ interface LayoutProps {
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
 
+  // The showcase landing page is intentionally full-bleed. Dashboard pages
+  // keep the constrained reading width below.
+  if (location.pathname === "/") {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="min-h-screen bg-white text-black font-dmSans">
-      {location.pathname !== "/" && <Navbar />}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+      <Navbar />
+      <main className="min-h-screen px-4 py-6 sm:px-6 lg:ml-64 lg:px-10 lg:py-10 xl:px-12">
         {children}
       </main>
     </div>

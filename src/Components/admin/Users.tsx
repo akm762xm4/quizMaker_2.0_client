@@ -1,126 +1,17 @@
 import { useEffect, useState } from "react";
+import { FiFilter, FiPlus, FiSearch, FiUsers } from "react-icons/fi";
 import { UserItem } from "../../features/user/UserItem";
 import { useGetAllUsersQuery, UserI } from "../../features/user/usersApi";
-import { TbFilterSearch } from "react-icons/tb";
 import { Modal } from "../Modal";
 import { AddUserForm } from "../../features/user/AddUserForm";
 import { NoResult } from "../NoResult";
-import { IoIosAdd } from "react-icons/io";
 import Loader from "../Loader";
 
 export const Users = () => {
-  const { data: users, isLoading, isFetching } = useGetAllUsersQuery();
-  const [filteredUsers, setFilteredUsers] = useState<UserI[] | undefined>();
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [filters, setFilters] = useState({
-    active: false,
-    role: "",
-    search: "",
-  });
-
-  useEffect(() => {
-    let filtered = users;
-
-    if (filters.active) {
-      filtered = filtered?.filter((user) => user.isActive);
-    }
-
-    if (filters.role) {
-      filtered = filtered?.filter((user) => user.role === filters.role);
-    }
-
-    if (filters.search) {
-      filtered = filtered?.filter((user) =>
-        user.username.toLowerCase().includes(filters.search.toLowerCase())
-      );
-    }
-
-    setFilteredUsers(filtered);
-  }, [filters, users]);
-
-  if (isLoading || isFetching) {
-    return <Loader />;
-  }
-
-  if (!isLoading && !isFetching && !users?.length) {
-    return <NoResult message="No users found." />;
-  }
-
-  return (
-    <>
-      {/* Filter + Header */}
-      <div className="p-4 flex flex-col gap-4 md:flex-row md:items-center justify-between bg-primary/20 rounded mb-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <TbFilterSearch size={24} />
-          <label className="flex items-center gap-2 text-sm md:text-base">
-            <input
-              type="checkbox"
-              checked={filters.active}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, active: e.target.checked }))
-              }
-              className="w-4 h-4"
-            />
-            Active
-          </label>
-
-          <select
-            title="filter"
-            value={filters.role}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, role: e.target.value }))
-            }
-            className="bg-primary rounded outline-none text-sm md:text-base"
-          >
-            <option value="">All Roles</option>
-            <option value="faculty">Faculty</option>
-            <option value="student">Student</option>
-          </select>
-        </div>
-
-        <div className="flex gap-2 flex-col sm:flex-row w-full sm:w-auto">
-          <input
-            type="text"
-            placeholder="Search by username"
-            value={filters.search}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, search: e.target.value }))
-            }
-            className="bg-primary outline-none rounded p-2 placeholder:text-xs text-sm w-full sm:w-auto"
-          />
-          <button
-            onClick={() => setIsAddOpen(true)}
-            className="btn-primary self-end"
-          >
-            + Add User
-          </button>
-        </div>
-      </div>
-
-      {/* User Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-[10%]">
-        {filteredUsers?.map((user) => (
-          <UserItem key={user._id} user={user} />
-        ))}
-
-        {/* Add User Card */}
-        <div
-          onClick={() => setIsAddOpen(true)}
-          className="cursor-pointer border-2 border-dashed border-accent text-accent rounded-2xl flex flex-col items-center justify-center p-6 hover:bg-muted transition"
-        >
-          <IoIosAdd size={36} />
-          <span className="mt-1 font-medium text-sm">Add User</span>
-        </div>
-      </div>
-
-      {/* Modal */}
-      {isAddOpen && (
-        <Modal
-          title="Add User"
-          child={<AddUserForm closeModal={() => setIsAddOpen(false)} />}
-          setIsOpen={setIsAddOpen}
-        />
-      )}
-    </>
-  );
+  const { data: users, isLoading, isFetching } = useGetAllUsersQuery(); const [filteredUsers, setFilteredUsers] = useState<UserI[] | undefined>(); const [isAddOpen, setIsAddOpen] = useState(false); const [filters, setFilters] = useState({ active: false, role: "", search: "" });
+  useEffect(() => { let filtered = users; if (filters.active) filtered = filtered?.filter((u) => u.isActive); if (filters.role) filtered = filtered?.filter((u) => u.role === filters.role); if (filters.search) filtered = filtered?.filter((u) => u.username.toLowerCase().includes(filters.search.toLowerCase())); setFilteredUsers(filtered); }, [filters, users]);
+  if (isLoading || isFetching) return <Loader />; if (!users?.length) return <NoResult message="No users found." />;
+  return <div className="dashboard-page"><div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">Administration</p><h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">People & access</h1><p className="mt-2 text-slate-600 dark:text-slate-300">Manage the people who create and take assessments.</p></div><button type="button" onClick={() => setIsAddOpen(true)} className="btn-dashboard"><FiPlus aria-hidden="true" size={18} />Add user</button></div><div className="mb-6 grid gap-4 sm:grid-cols-3"><Metric value={users.length} label="Total people" icon="people" /><Metric value={users.filter((u) => u.isActive).length} label="Active accounts" icon="active" /><Metric value={users.filter((u) => u.role === "faculty").length} label="Faculty creators" icon="faculty" /></div><section className="surface-card p-4 sm:p-5"><div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"><div className="flex flex-1 flex-col gap-3 sm:flex-row"><label className="relative flex-1"><FiSearch aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" /><input aria-label="Search users" type="search" placeholder="Search people" value={filters.search} onChange={(e) => setFilters((p) => ({ ...p, search: e.target.value }))} className="w-full !rounded-xl !border-slate-200 !bg-slate-50 !py-3 !pl-10 dark:!border-slate-700 dark:!bg-slate-800" /></label><label className="flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 text-sm font-semibold dark:border-slate-700"><FiFilter aria-hidden="true" /><select aria-label="Filter role" value={filters.role} onChange={(e) => setFilters((p) => ({ ...p, role: e.target.value }))} className="!w-auto !border-0 !bg-transparent !p-0 !text-sm !ring-0"><option value="">All roles</option><option value="faculty">Faculty</option><option value="student">Students</option></select></label></div><label className="flex min-h-11 items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={filters.active} onChange={(e) => setFilters((p) => ({ ...p, active: e.target.checked }))} className="themed-checkbox" />Active only</label></div></section><div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{filteredUsers?.map((u) => <UserItem key={u._id} user={u} />)}</div>{isAddOpen && <Modal title="Add user" child={<AddUserForm closeModal={() => setIsAddOpen(false)} />} setIsOpen={setIsAddOpen} />}</div>;
 };
+
+const Metric = ({ value, label, icon }: { value: number; label: string; icon: string }) => <div className="surface-card p-4"><FiUsers className={icon === "faculty" ? "text-violet-600 dark:text-violet-300" : icon === "active" ? "text-emerald-600 dark:text-emerald-300" : "text-violet-600 dark:text-violet-300"} size={20} /><p className="mt-3 text-2xl font-bold">{value}</p><p className="text-sm text-slate-500 dark:text-slate-400">{label}</p></div>;

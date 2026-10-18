@@ -9,18 +9,18 @@ export const getToken = (): string | null => {
   return localStorage.getItem("token");
 };
 
-export const getUser = (): UserI => {
-  const token = localStorage.getItem("token")!;
-  const decoded = jwtDecode<{ _id: string; username: string; role: string }>(
-    token
-  );
-  const user = {
-    _id: decoded?._id,
-    username: decoded?.username,
-    role: decoded?.role,
-  };
+export const getUser = (): UserI | null => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
 
-  return user;
+  try {
+    const decoded = jwtDecode<{ _id: string; username: string; role: string }>(
+      token
+    );
+    return { _id: decoded._id, username: decoded.username, role: decoded.role };
+  } catch {
+    return null;
+  }
 };
 
 export const logoutUser = () => {

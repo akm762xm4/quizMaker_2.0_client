@@ -68,80 +68,47 @@ export const RegisterForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-white">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 bg-white w-full rounded-xl p-4 sm:p-6 sm:border sm:border-gray-200 shadow-md"
-      >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div className="space-y-1">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            id="username"
-            type="text"
-            placeholder="Enter your username"
-            className="form-input"
-            {...register("username")}
-          />
+          <label htmlFor="reg-username" className="form-label">Username</label>
+          <input id="reg-username" type="text" placeholder="Enter your username" className="form-input" {...register("username")} />
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            className="form-input"
-            {...register("password")}
-          />
+          <label htmlFor="reg-password" className="form-label">Password</label>
+          <input id="reg-password" type="password" placeholder="Enter your password" className="form-input" {...register("password")} />
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="role" className="form-label">
-            Role
-          </label>
-          <select id="role" className="form-input" {...register("role")}>
+          <label htmlFor="reg-role" className="form-label">Role</label>
+          <select id="reg-role" className="form-input" {...register("role")}>
             <option value="faculty">Faculty</option>
             <option value="student">Student</option>
           </select>
         </div>
 
         {selectedRole === "faculty" && existingRequest?.hasRequest && (
-          <div
-            className={`p-3 rounded-lg text-sm ${
-              existingRequest.status === "pending"
-                ? "bg-yellow-50 text-yellow-800 border border-yellow-200"
-                : existingRequest.status === "approved"
-                ? "bg-green-50 text-green-800 border border-green-200"
-                : "bg-red-50 text-red-800 border border-red-200"
-            }`}
-          >
+          <div className={`p-3 rounded-lg text-sm ${
+            existingRequest.status === "pending"
+              ? "bg-yellow-50 text-yellow-800 border border-yellow-200 dark:bg-yellow-950/40 dark:text-yellow-200 dark:border-yellow-800"
+              : existingRequest.status === "approved"
+              ? "bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-800"
+              : "bg-red-50 text-red-800 border border-red-200 dark:bg-red-950/40 dark:text-red-200 dark:border-red-800"
+          }`}>
             {existingRequest.message}
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row justify-between gap-2">
-          <button
-            type="reset"
-            className="btn-outline w-full sm:w-auto text-center"
-          >
-            Reset
-          </button>
+        <div className="flex flex-col sm:flex-row justify-between gap-2 pt-1">
+          <button type="reset" className="btn-outline w-full sm:w-auto text-center">Reset</button>
           <button
             type="submit"
             className="btn-primary w-full sm:w-auto text-center disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={
-              isLoading ||
-              (selectedRole === "faculty" && existingRequest?.hasRequest)
-            }
+            disabled={isLoading || (selectedRole === "faculty" && existingRequest?.hasRequest)}
           >
             {isLoading ? "Registering..." : "Register"}
           </button>
         </div>
-      </form>
-    </div>
+    </form>
   );
 };

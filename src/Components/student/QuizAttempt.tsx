@@ -1,131 +1,20 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { FiArrowLeft, FiArrowRight, FiCheck, FiClock, FiSend } from "react-icons/fi";
 import { useGetQuizByIdQuery } from "../../features/quiz/quizApi";
 import { QuestionI } from "../../features/qbank/qBankApi";
 import { useAttemptQuizMutation } from "../../features/result/resultApi";
 import { toast } from "sonner";
 import Loader from "../Loader";
 import { NoResult } from "../NoResult";
+import { BackButton } from "../BackButton";
 
 const QuizAttempt = () => {
-  const { quizId } = useParams<{ quizId: string }>();
-  const { data: quiz, isLoading, isError } = useGetQuizByIdQuery(quizId || "");
-  const [questions, setQuestions] = useState<QuestionI[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [attemptQuiz, { isLoading: isSubmitting }] = useAttemptQuizMutation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (quiz?.questions) {
-      setQuestions(quiz.questions);
-      setAnswers(new Array(quiz.questions.length).fill(-1));
-    }
-  }, [quiz]);
-
-  const handleAnswerSelect = (selectedOption: number) => {
-    const updatedAnswers = [...answers];
-    updatedAnswers[currentQuestionIndex] = selectedOption;
-    setAnswers(updatedAnswers);
-  };
-
-  const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!quizId) {
-      toast.error("Quiz ID is missing.");
-      return;
-    }
-
-    if (answers.includes(-1)) {
-      toast.error("Please answer all questions before submitting.");
-      return;
-    }
-
-    try {
-      const res = await attemptQuiz({ quizId, answers }).unwrap();
-      toast.success(`Quiz submitted successfully! Your score: ${res.score}`);
-      navigate("/student");
-    } catch {
-      toast.error("Failed to submit the quiz. Please try again.");
-    }
-  };
-
-  if (isLoading) return <Loader />;
-
-  if (isError || !quiz || !questions.length) {
-    return <NoResult message="Quiz not found or no questions found." />;
-  }
-
-  const currentQuestion = questions[currentQuestionIndex];
-
-  return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-background text-text-primary p-4">
-      <div className="card w-full max-w-2xl space-y-6">
-        {/* Header */}
-        <div className="space-y-1">
-          <h2 className="text-lg font-semibold">
-            Question {currentQuestionIndex + 1} of {questions.length}
-          </h2>
-          <p className="text-sm text-text-secondary">{currentQuestion.text}</p>
-        </div>
-
-        {/* Options */}
-        <ul className="space-y-3">
-          {currentQuestion.options.map((option, index) => (
-            <li key={index}>
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="radio"
-                  name={`question-${currentQuestionIndex}`}
-                  value={index}
-                  checked={answers[currentQuestionIndex] === index}
-                  onChange={() => handleAnswerSelect(index)}
-                  className="accent-accent"
-                />
-                <span className="break-words">{option}</span>
-              </label>
-            </li>
-          ))}
-        </ul>
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center">
-          <button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            className="btn-outline disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Previous
-          </button>
-
-          {currentQuestionIndex === questions.length - 1 ? (
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-          ) : (
-            <button onClick={handleNext} className="btn-primary">
-              Next
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  const { quizId } = useParams<{ quizId: string }>(); const { data: quiz, isLoading, isError } = useGetQuizByIdQuery(quizId || ""); const [questions, setQuestions] = useState<QuestionI[]>([]); const [index, setIndex] = useState(0); const [answers, setAnswers] = useState<number[]>([]); const [attemptQuiz, { isLoading: isSubmitting }] = useAttemptQuizMutation(); const navigate = useNavigate();
+  useEffect(() => { if (quiz?.questions) { setQuestions(quiz.questions); setAnswers(new Array(quiz.questions.length).fill(-1)); } }, [quiz]);
+  if (isLoading) return <Loader />; if (isError || !quiz || !questions.length) return <NoResult message="Quiz not found or has no questions." />;
+  const question = questions[index]; const answered = answers.filter((answer) => answer !== -1).length; const select = (option: number) => setAnswers((current) => current.map((answer, i) => i === index ? option : answer));
+  const submit = async () => { if (!quizId) return; if (answers.includes(-1)) return toast.error(`Answer all ${questions.length} questions before submitting.`); try { const res = await attemptQuiz({ quizId, answers }).unwrap(); toast.success(`Quiz submitted. Score: ${res.score}/${questions.length}`); navigate("/student/result"); } catch { toast.error("We couldn't submit this quiz. Please try again."); } };
+  return <div className="mx-auto max-w-4xl"><div className="mb-6 flex flex-wrap items-center justify-between gap-3"><BackButton label="Leave quiz" /><div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-sm font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300"><FiClock aria-hidden="true" />{quiz.maxTime} min</div></div><header className="surface-card p-5 sm:p-6"><div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">{quiz.title}</p><h1 className="mt-2 text-2xl font-bold sm:text-3xl">Question {index + 1} <span className="text-slate-400">of {questions.length}</span></h1></div><span className="rounded-full bg-violet-100 px-3 py-1.5 text-sm font-bold text-violet-700 dark:bg-violet-950 dark:text-violet-300">{answered}/{questions.length} answered</span></div><div className="mt-5 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div className="h-full rounded-full bg-accent transition-all" style={{ width: `${((index + 1) / questions.length) * 100}%` }} /></div></header><main className="surface-card mt-5 p-5 sm:p-8"><h2 className="text-xl font-bold leading-relaxed sm:text-2xl">{question.text}</h2><fieldset className="mt-7 space-y-3"><legend className="sr-only">Answer choices</legend>{question.options.map((option, optionIndex) => { const selected = answers[index] === optionIndex; return <label key={option} className={`flex min-h-14 cursor-pointer items-center gap-4 rounded-xl border p-4 transition ${selected ? "border-accent bg-violet-50 dark:border-violet-400 dark:bg-violet-950" : "border-slate-200 hover:border-violet-300 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"}`}><input type="radio" name={`question-${index}`} checked={selected} onChange={() => select(optionIndex)} className="sr-only" /><span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-xs font-bold ${selected ? "border-accent bg-accent text-white" : "border-slate-300 text-slate-500 dark:border-slate-600"}`}>{selected ? <FiCheck aria-hidden="true" /> : String.fromCharCode(65 + optionIndex)}</span><span className="font-medium">{option}</span></label>; })}</fieldset></main><footer className="mt-5 flex items-center justify-between gap-3"><button type="button" onClick={() => setIndex((current) => current - 1)} disabled={index === 0} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-300 px-4 font-semibold disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700"><FiArrowLeft aria-hidden="true" />Previous</button>{index === questions.length - 1 ? <button type="button" onClick={submit} disabled={isSubmitting} className="btn-dashboard disabled:opacity-50">{isSubmitting ? "Submitting…" : "Submit quiz"}<FiSend aria-hidden="true" /></button> : <button type="button" onClick={() => setIndex((current) => current + 1)} className="btn-dashboard">Next<FiArrowRight aria-hidden="true" /></button>}</footer></div>;
 };
-
 export default QuizAttempt;

@@ -38,7 +38,10 @@ const qBankApi = api.injectEndpoints({
     //   query: (qBankId) => `qbank/getQuestions/${qBankId}`,
     //   providesTags: ["quiz", "question"],
     // }),
-    addQuestion: builder.mutation<SuccessResponse, any>({
+    addQuestion: builder.mutation<
+      SuccessResponse,
+      { qBankId: string | undefined; body: AddQuestionI }
+    >({
       query: ({ qBankId, body }) => ({
         url: `/qbank/addQuestion/${qBankId}`,
         body,

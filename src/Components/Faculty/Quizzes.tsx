@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { Quiz, useGetQuizzesQuery } from "../../features/quiz/quizApi";
 import { QuizItem } from "../../features/quiz/QuizItem";
-import { FaPlus } from "react-icons/fa";
 import { Modal } from "../Modal";
 import { AddQuizForm } from "../../features/quiz/AddQuizForm";
-import { TbFilterSearch } from "react-icons/tb";
+import { FiPlus, FiSearch } from "react-icons/fi";
 import { NoResult } from "../NoResult";
-import { PageHeader } from "../PageHeader";
 import Loader from "../Loader";
 
 export const Quizzes = () => {
@@ -32,36 +30,33 @@ export const Quizzes = () => {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen px-4 md:px-[20%] py-6 gap-6">
+      <div className="dashboard-page">
         {/* Page Header with Add Button */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-          <PageHeader
-            title="My Quizzes"
-            description="View and manage all quizzes you've created. You can search, edit, or add new ones."
-          />
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div><p className="text-xs font-bold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">Faculty tools</p><h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Your quizzes</h1><p className="mt-2 text-slate-600 dark:text-slate-300">Create, publish, and refine assessments for your learners.</p></div>
           <button
             onClick={() => setIsAddOpen(true)}
-            className="flex items-center gap-2 text-sm md:text-base bg-accent text-white px-4 py-2 rounded-md hover:bg-purple-700 transition self-start md:self-auto"
+            className="btn-dashboard"
           >
-            <FaPlus />
+            <FiPlus aria-hidden="true" />
             Add Quiz
           </button>
         </div>
 
         {/* Search Bar */}
-        <div className="flex items-center gap-3 bg-highlight/30 border border-muted p-3 rounded-xl">
-          <TbFilterSearch size={20} className="text-text-secondary" />
+        <div className="surface-card mb-6 flex items-center gap-3 p-3">
+          <FiSearch aria-hidden="true" size={20} className="text-slate-400" />
           <input
             type="text"
             placeholder="Search quizzes..."
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            className="bg-transparent outline-none text-sm md:text-base w-full placeholder:text-muted-foreground"
+            className="!border-0 !bg-transparent !p-1 !ring-0"
           />
         </div>
 
         {/* Quiz List */}
-        <div className="flex flex-col gap-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filteredQuizzes?.map((quiz) => (
             <QuizItem key={quiz._id} quiz={quiz} />
           ))}

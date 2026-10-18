@@ -5,12 +5,12 @@ import { App } from "./App.tsx";
 import { Provider } from "react-redux";
 import { store } from "./app/store.ts";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "./Components/ThemeProvider";
 
 createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <Toaster />
-      <App />
-    </BrowserRouter>
-  </Provider>
+  <ThemeProvider>
+    <Provider store={store}>
+      <BrowserRouter><Toaster richColors /><App /></BrowserRouter>
+    </Provider>
+  </ThemeProvider>
 );

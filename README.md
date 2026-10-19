@@ -18,7 +18,7 @@ A modern web application for creating, managing, and taking quizzes. Built with 
 - Tailwind CSS
 - React Hook Form
 - React Router
-- Axios for API calls
+- Redux Toolkit (RTK Query) for API calls
 
 ## Getting Started
 
@@ -55,7 +55,44 @@ The application will be available at `http://localhost:5173`
 
 For a recruiter-friendly tour, select one of the **Admin demo**, **Faculty demo**, or **Student demo** cards on the sign-in screen. The selected account is prefilled for you.
 
-Before deploying, seed the demo workspace from the server project with `npm run demo:seed`. Configure `VITE_API_BASE_URL` and the `VITE_DEMO_*` values from `.env.example` in your client host. Use a distinct password for public demo accounts; their credentials are intentionally visible because they are resettable sample accounts.
+Before deploying, seed the demo workspace from the server project with `npm run demo:seed`. Use a distinct password for public demo accounts; their credentials are intentionally visible because they are resettable sample accounts.
+
+## Environment variables
+
+Vite inlines every `VITE_*` value it can see at build time, so the file that
+holds them determines what the deployed bundle talks to.
+
+| File | Loaded by | Purpose |
+| --- | --- | --- |
+| `.env` | every build | Shared demo account credentials only. **No API URL.** |
+| `.env.development` | `npm run dev` only | `VITE_API_BASE_URL=http://localhost:8000/api` |
+| `.env.local` | local only, git-ignored | Machine-specific overrides |
+| Hosting dashboard | Vercel build | Optional production `VITE_API_BASE_URL` |
+
+The API URL is resolved in `src/app/serverApi.ts`:
+
+1. `VITE_API_BASE_URL`, when set.
+2. `http://localhost:8000/api` while running `npm run dev`.
+3. `https://quiz-maker-2-0-server.vercel.app/api` for any production build.
+
+If a production build is configured with a `localhost` / `127.0.0.1` URL, the
+app ignores it, logs a warning, and uses the deployed API. That guard exists
+because a committed `VITE_API_BASE_URL=http://localhost:8000/api` once shipped
+inside the deployed bundle.
+
+## Troubleshooting
+
+**Login works on a laptop but not on a phone.** The deployed bundle is calling
+the API on the *device that opened the page* — `localhost` is the phone itself,
+so the request fails. Chrome on Android additionally shows *“wants to access
+other apps and services on this device”* because the page is reaching for a
+local address. Check the deployed JS for `localhost:8000` and rebuild with a
+public API URL. The app now refuses to boot with a loopback URL in production,
+so a fresh deploy cannot regress.
+
+**`npm run dev` talks to the deployed API.** Your shell or `.env.local` is
+setting `VITE_API_BASE_URL`; remove it or point it at
+`http://localhost:8000/api`.
 
 ## Project Structure
 

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { RegisterCredentials } from "../auth/authApi";
 import { toast } from "sonner";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { useEditUserMutation, UserI } from "./usersApi";
 
 interface EditUserFormProps {
@@ -30,8 +30,7 @@ export const EditUserForm: React.FC<EditUserFormProps> = ({
           closeModal();
         });
     } catch (error) {
-      const err = error as ErrorI;
-      toast.error(err?.data?.error);
+      toast.error(getApiErrorMessage(error, "Failed to update user."));
     }
   };
 

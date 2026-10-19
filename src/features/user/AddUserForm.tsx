@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { RegisterCredentials } from "../auth/authApi";
 import { useCreateUserMutation } from "./usersApi";
 
@@ -26,8 +26,7 @@ export const AddUserForm: React.FC<AddUserFormProps> = ({ closeModal }) => {
           closeModal();
         });
     } catch (error) {
-      const err = error as ErrorI;
-      toast.error(err?.data?.error);
+      toast.error(getApiErrorMessage(error, "Failed to add user."));
     }
   };
 

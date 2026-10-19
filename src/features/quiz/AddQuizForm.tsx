@@ -6,7 +6,7 @@ import {
   useUpdateQuizMutation,
 } from "./quizApi";
 import { toast } from "sonner";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { useEffect } from "react";
 
 interface AddQuizFormProps {
@@ -44,8 +44,7 @@ export const AddQuizForm: React.FC<AddQuizFormProps> = ({
           });
       }
     } catch (error) {
-      const err = error as ErrorI;
-      toast.error(err?.data?.error);
+      toast.error(getApiErrorMessage(error, "Failed to save the quiz."));
     }
   };
 

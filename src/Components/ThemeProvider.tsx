@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Theme, ThemeContext, ResolvedTheme } from "./themeContext";
+import { readLocalStorage, writeLocalStorage } from "../utils/localStorage";
 
 const getSystemTheme = (): ResolvedTheme =>
   window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(() =>
-    (localStorage.getItem("quizmaker-theme") as Theme | null) || "system"
+    (readLocalStorage("quizmaker-theme") as Theme | null) || "system"
   );
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() =>
     theme === "system" ? getSystemTheme() : theme
@@ -25,7 +26,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }, [theme]);
 
   const updateTheme = (nextTheme: Theme) => {
-    localStorage.setItem("quizmaker-theme", nextTheme);
+    writeLocalStorage("quizmaker-theme", nextTheme);
     setTheme(nextTheme);
   };
 

@@ -3,7 +3,7 @@ import { RegisterCredentials, useRegisterMutation } from "./authApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { setToken } from "../../utils/localStorage";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { useCheckExistingRequestQuery } from "../approveRequest/requestApi";
 import { useState, useEffect } from "react";
 
@@ -47,7 +47,12 @@ export const RegisterForm = () => {
       const res = await signUp(values).unwrap();
       toast.success(res.message);
       if (res?.user?.role) {
-        setToken(res.user.token);
+        if (!setToken(res.user.token)) {
+          toast.error(
+            "Registration succeeded, but this browser is blocking local storage, so the session can't be saved."
+          );
+          return;
+        }
         const role = res.user.role;
         switch (role) {
           case "admin":
@@ -62,8 +67,9 @@ export const RegisterForm = () => {
         }
       }
     } catch (error) {
-      const err = error as ErrorI;
-      toast.error(err?.data?.error);
+      toast.error(
+        getApiErrorMessage(error, "Registration failed. Please try again.")
+      );
     }
   };
 
@@ -71,12 +77,32 @@ export const RegisterForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div className="space-y-1">
           <label htmlFor="reg-username" className="form-label">Username</label>
-          <input id="reg-username" type="text" placeholder="Enter your username" className="form-input" {...register("username")} />
+          <input
+            id="reg-username"
+            type="text"
+            placeholder="Enter your username"
+            className="form-input"
+            autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            {...register("username")}
+          />
         </div>
 
         <div className="space-y-1">
           <label htmlFor="reg-password" className="form-label">Password</label>
-          <input id="reg-password" type="password" placeholder="Enter your password" className="form-input" {...register("password")} />
+          <input
+            id="reg-password"
+            type="password"
+            placeholder="Enter your password"
+            className="form-input"
+            autoComplete="new-password"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            {...register("password")}
+          />
         </div>
 
         <div className="space-y-1">

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Modal } from "../../Components/Modal";
 import { QuestionForm } from "./QuestionForm";
 import { toast } from "sonner";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { Loader } from "../../Components/Loader";
 import { NoResult } from "../../Components/NoResult";
 import { BackButton } from "../../Components/BackButton";
@@ -32,7 +32,7 @@ export const QBankPage = () => {
           setIsAddOpen(false);
         });
     } catch (error) {
-      toast.error((error as ErrorI)?.data?.error || "Failed to add question.");
+      toast.error(getApiErrorMessage(error, "Failed to add question."));
     }
   };
 

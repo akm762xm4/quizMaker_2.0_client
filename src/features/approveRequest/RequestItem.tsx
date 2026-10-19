@@ -7,7 +7,7 @@ import {
 } from "./requestApi";
 import { IoClose, IoCheckmark, IoTrash } from "react-icons/io5";
 import { toast } from "sonner";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { DeleteForm } from "../user/DeleteForm";
 import { Modal } from "../../Components/Modal";
 
@@ -26,8 +26,7 @@ export const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
       const res = await approve({ requestId: request._id, action }).unwrap();
       toast.success(res.message);
     } catch (error) {
-      const err = error as ErrorI;
-      toast.error(err?.data?.error || "Something went wrong");
+      toast.error(getApiErrorMessage(error, "Something went wrong."));
     }
   };
 
@@ -36,8 +35,7 @@ export const RequestItem: React.FC<RequestItemProps> = ({ request }) => {
       const res = await deleteRequest(request._id).unwrap();
       toast.success(res.message);
     } catch (error) {
-      const err = error as ErrorI;
-      toast.error(err?.data?.error || "Something went wrong");
+      toast.error(getApiErrorMessage(error, "Something went wrong."));
     }
   };
 

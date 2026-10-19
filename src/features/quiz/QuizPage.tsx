@@ -1,68 +1,10 @@
-import { MdPerson, MdQuiz, MdTimer } from "react-icons/md";
-import { Badge } from "../../Components/Badge";
+import { FiCheckCircle, FiClock, FiHelpCircle, FiUser } from "react-icons/fi";
 import { formatTime } from "../../utils/dateTime";
 import { Quiz } from "./quizApi";
 
-interface QuizPageProps {
-  quiz: Quiz;
-}
+export const QuizPage: React.FC<{ quiz: Quiz }> = ({ quiz }) => <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-950">
+  <div className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-br from-violet-50 to-white px-5 py-6 dark:border-slate-800 dark:from-violet-950/40 dark:to-slate-900 sm:px-6"><span className="section-rule max-w-xs">Assessment overview</span><h3 className="mt-4 text-2xl font-bold tracking-tight text-slate-950 dark:text-slate-50">{quiz.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">Review the configuration before managing this assessment.</p></div>
+  <div className="grid gap-3 p-4 sm:grid-cols-2 sm:p-5"><Detail icon={FiUser} label="Created by" value={quiz.createdBy?.username || "Faculty"} /><Detail icon={FiCheckCircle} label="Availability" value={quiz.enabled ? "Active" : "Inactive"} accent={quiz.enabled ? "emerald" : "slate"} /><Detail icon={FiHelpCircle} label="Questions" value={`${quiz.questions?.length || 0} total`} /><Detail icon={FiClock} label="Time limit" value={formatTime(quiz.maxTime)} /></div>
+</div>;
 
-export const QuizPage: React.FC<QuizPageProps> = ({ quiz }) => {
-  return (
-    <div className="bg-highlight/30 border border-highlight p-6 rounded-2xl shadow-modal w-full max-w-xl mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-text-primary mb-1">
-          {quiz.title}
-        </h2>
-        <p className="text-sm text-text-secondary">
-          An overview of this quiz’s configuration.
-        </p>
-      </div>
-
-      {/* Info Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm md:text-base">
-        {/* Creator */}
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-primary shadow-sm">
-          <MdPerson className="text-accent text-lg" />
-          <div>
-            <div className="text-muted-foreground">Created By</div>
-            <div className="font-medium text-text-primary">
-              {quiz.createdBy.username}
-            </div>
-          </div>
-        </div>
-
-        {/* Status */}
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-primary shadow-sm">
-          <Badge
-            title={quiz.enabled ? "Active" : "Inactive"}
-            bg={quiz.enabled ? "bg-green-500/20" : "bg-red-500/20"}
-          />
-        </div>
-
-        {/* Number of Questions */}
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-primary shadow-sm">
-          <MdQuiz className="text-accent text-lg" />
-          <div>
-            <div className="text-muted-foreground">Total Questions</div>
-            <div className="font-medium text-text-primary">
-              {quiz.questions.length}
-            </div>
-          </div>
-        </div>
-
-        {/* Max Time */}
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-primary shadow-sm">
-          <MdTimer className="text-accent text-lg" />
-          <div>
-            <div className="text-muted-foreground">Max Time</div>
-            <div className="font-medium text-text-primary">
-              {formatTime(quiz.maxTime)}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+const Detail = ({ icon: Icon, label, value, accent = "violet" }: { icon: React.ElementType; label: string; value: string; accent?: "violet" | "emerald" | "slate" }) => { const tones = { violet: "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300", emerald: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", slate: "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300" }; return <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${tones[accent]}`}><Icon aria-hidden="true" size={18} /></span><div className="min-w-0"><p className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</p><p className="mt-1 truncate text-sm font-bold text-slate-900 dark:text-slate-100">{value}</p></div></div>; };

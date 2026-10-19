@@ -10,7 +10,7 @@ import { ThemeProvider } from "./Components/ThemeProvider";
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
     <Provider store={store}>
-      <BrowserRouter><Toaster richColors /><App /></BrowserRouter>
+      <BrowserRouter><Toaster richColors position="top-right" toastOptions={{ className: "quiz-toast" }} /><App /></BrowserRouter>
     </Provider>
   </ThemeProvider>
 );

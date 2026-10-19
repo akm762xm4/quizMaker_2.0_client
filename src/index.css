@@ -16,7 +16,9 @@
     @apply bg-white text-text-primary text-sm sm:text-base;
   }
 
-  html.dark body { @apply bg-slate-950 text-slate-50; }
+  html.dark body {
+    @apply bg-slate-950 text-slate-50;
+  }
 
   h1,
   h2,
@@ -84,19 +86,78 @@
 }
 
 @layer components {
-  .sidebar-link { @apply flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold capitalize text-slate-600 transition hover:bg-violet-50 hover:text-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-slate-300 dark:hover:bg-violet-950/40 dark:hover:text-white; }
-  .sidebar-link-active { @apply bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300; }
-  .icon-button { @apply grid h-11 w-11 place-items-center rounded-xl text-slate-600 transition hover:bg-violet-50 hover:text-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-slate-300 dark:hover:bg-violet-950/40 dark:hover:text-white; }
-  .surface-card { @apply rounded-2xl border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50; }
-  .dashboard-page { @apply mx-auto max-w-7xl; }
-  .btn-dashboard { @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-accent px-3 text-sm font-bold text-white transition hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent; }
+  .sidebar-link {
+    @apply flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold capitalize text-slate-600 transition hover:bg-violet-50 hover:text-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-slate-300 dark:hover:bg-violet-950/40 dark:hover:text-white;
+  }
+  .sidebar-link-active {
+    @apply bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300;
+  }
+  .icon-button {
+    @apply grid h-11 w-11 place-items-center rounded-xl text-slate-600 transition hover:bg-violet-50 hover:text-violet-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent dark:text-slate-300 dark:hover:bg-violet-950/40 dark:hover:text-white;
+  }
+  .surface-card {
+    @apply rounded-[1.35rem] border border-slate-200/80 bg-white text-slate-950 shadow-[0_12px_35px_-24px_rgba(15,23,42,.55)] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50;
+  }
+  .dashboard-page {
+    @apply mx-auto max-w-7xl;
+  }
+  .btn-dashboard {
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-accent px-3 text-sm font-bold text-white transition hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;
+  }
+  .aurora-page {
+    background-image:
+      radial-gradient(
+        circle at 80% 0%,
+        rgba(124, 58, 237, 0.12),
+        transparent 28rem
+      ),
+      radial-gradient(
+        circle at 0% 80%,
+        rgba(124, 58, 237, 0.06),
+        transparent 24rem
+      );
+  }
+  .aurora-panel {
+    @apply relative overflow-hidden border border-slate-200/80 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/80;
+  }
+  .aurora-panel::after {
+    content: "";
+    @apply pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-accent/10 blur-3xl;
+  }
+  .section-rule {
+    @apply flex items-center gap-3 text-[11px] font-bold uppercase tracking-[.18em] text-slate-400;
+  }
+  .section-rule::after {
+    content: "";
+    @apply h-px flex-1 bg-slate-200 dark:bg-slate-800;
+  }
+  .quiz-toast {
+    @apply !border-slate-200 !bg-white !text-slate-900 !shadow-xl dark:!border-slate-700 dark:!bg-slate-900 dark:!text-slate-50;
+  }
+  .search-field { @apply min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none transition placeholder:text-slate-400 focus:border-accent focus:ring-2 focus:ring-accent/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-50 dark:placeholder:text-slate-500; }
 }
 
-html.dark .bg-white, html.dark .bg-primary { background-color: rgb(15 23 42); }
-html.dark .text-black, html.dark .text-text-primary { color: rgb(248 250 252); }
-html.dark .text-text-secondary { color: rgb(148 163 184); }
-html.dark .border-gray-200, html.dark .border-gray-100, html.dark .border-slate-200, html.dark .border-muted { border-color: rgb(51 65 85); }
-html.dark .bg-secondary, html.dark .bg-muted { background-color: rgb(30 41 59); }
+html.dark .bg-white,
+html.dark .bg-primary {
+  background-color: rgb(15 23 42);
+}
+html.dark .text-black,
+html.dark .text-text-primary {
+  color: rgb(248 250 252);
+}
+html.dark .text-text-secondary {
+  color: rgb(148 163 184);
+}
+html.dark .border-gray-200,
+html.dark .border-gray-100,
+html.dark .border-slate-200,
+html.dark .border-muted {
+  border-color: rgb(51 65 85);
+}
+html.dark .bg-secondary,
+html.dark .bg-muted {
+  background-color: rgb(30 41 59);
+}
 
 @layer components {
   .btn-primary {

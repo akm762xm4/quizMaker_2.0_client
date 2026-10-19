@@ -12,7 +12,7 @@ export const LogoutForm: React.FC<LogoutFormProps> = ({
   isLoading,
 }) => {
   return (
-    <div className="flex flex-col gap-6 text-center">
+    <div className="flex flex-col gap-6">
       <p className="text-base text-muted-foreground">
         Are you sure you want to log out
         {username && (

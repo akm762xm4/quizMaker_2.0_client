@@ -12,7 +12,7 @@ export const DeleteForm: React.FC<DeleteFormProps> = ({
   name,
 }) => {
   return (
-    <div className="flex flex-col gap-6 text-center">
+    <div className="flex flex-col gap-6">
       <p className="text-base text-muted-foreground">
         Are you sure you want to delete{" "}
         <span className="text-accent font-semibold">{name}</span>?

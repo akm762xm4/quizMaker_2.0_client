@@ -2,6 +2,7 @@ import { useState } from "react";
 import { LoginForm } from "../features/auth/LoginForm";
 import { RegisterForm } from "../features/auth/RegisterForm";
 import { DemoAccount, demoAccounts } from "../features/auth/demoAccounts";
+import { Link } from "react-router-dom";
 
 export const Auth = () => {
   const [state, setState] = useState<0 | 1>(0); // 0 = Login, 1 = Register
@@ -13,11 +14,13 @@ export const Auth = () => {
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-6xl grid items-center gap-8 lg:grid-cols-[1.05fr_.95fr] lg:gap-16">
+    <main className="aurora-page min-h-[100dvh] bg-white px-4 py-6 dark:bg-slate-950 sm:px-8 lg:h-[100dvh] lg:overflow-hidden lg:px-12 lg:py-6">
+      <Link to="/showcase" className="fixed right-5 top-5 z-20 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-xs font-bold text-slate-600 no-underline shadow-sm backdrop-blur transition hover:border-violet-300 hover:text-accent dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300">Product tour <span aria-hidden="true">↗</span></Link>
+      <div className="mx-auto grid h-full w-full max-w-7xl items-stretch gap-6 lg:max-h-full lg:grid-cols-[1.15fr_.85fr]">
         {/* Left: hero */}
-        <section className="max-w-2xl">
-          <div className="mb-6 flex items-center gap-3">
+        <section className="aurora-panel flex max-w-3xl flex-col justify-between overflow-y-auto rounded-[2rem] p-6 shadow-[0_30px_80px_-55px_rgba(124,58,237,.7)] sm:p-10 lg:p-10">
+          <div>
+          <div className="mb-7 flex items-center gap-3">
             <img
               src="/quizmaker_logo_mark.svg"
               alt="QuizMaker logo"
@@ -27,8 +30,9 @@ export const Auth = () => {
               QuizMaker 2.0
             </p>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-slate-950 dark:text-slate-50 sm:text-5xl">
-            See every side of a smarter assessment workflow.
+          <p className="section-rule mb-5 max-w-md">A clearer way to learn</p>
+          <h1 className="max-w-2xl text-4xl font-bold tracking-[-.04em] text-slate-950 dark:text-slate-50 sm:text-6xl">
+            Turn every question into a better next step.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
             Explore the same role-based experience used by administrators,
@@ -36,18 +40,19 @@ export const Auth = () => {
             designed for a quick, no-setup tour.
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {demoAccounts.map((account) => (
+            {demoAccounts.map((account, index) => (
               <button
                 key={account.role}
                 type="button"
                 aria-pressed={selectedDemo?.role === account.role}
                 onClick={() => selectDemo(account)}
-                className={`min-h-28 rounded-2xl border p-4 text-left shadow-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                className={`group relative min-h-32 overflow-hidden rounded-2xl border p-4 text-left shadow-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                   selectedDemo?.role === account.role
                     ? "border-accent bg-accent text-white shadow-violet-200 dark:shadow-violet-900"
                     : "border-slate-200 bg-white text-slate-900 hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-violet-600"
                 }`}
               >
+                <span className={`mb-5 block text-xs font-bold ${selectedDemo?.role === account.role ? "text-violet-100" : "text-slate-400"}`}>0{index + 1}</span>
                 <span className="block text-sm font-bold capitalize">
                   {account.role} demo
                 </span>
@@ -63,11 +68,12 @@ export const Auth = () => {
             Select a role to prefill the sign-in form, then log in to take the
             guided tour.
           </p>
+          </div><div className="mt-12 flex items-center gap-3 border-t border-slate-200 pt-5 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400"><span className="h-2 w-2 rounded-full bg-emerald-500" />Role-based access, sample-safe by design</div>
         </section>
 
         {/* Right: form card */}
-        <section className="w-full rounded-3xl border border-slate-200 bg-white p-2 shadow-xl shadow-violet-100/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-violet-900/20">
-          <div className="rounded-2xl bg-white p-4 dark:bg-slate-900 sm:p-6">
+        <section className="aurora-panel w-full overflow-y-auto rounded-[2rem] p-2 shadow-xl shadow-violet-100/50 dark:shadow-violet-900/20">
+          <div className="rounded-[1.5rem] bg-white p-5 dark:bg-slate-900 sm:p-8">
             {selectedDemo && state === 0 && (
               <div
                 className="mb-5 rounded-xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-950 dark:border-violet-800 dark:bg-violet-950/50 dark:text-violet-200"

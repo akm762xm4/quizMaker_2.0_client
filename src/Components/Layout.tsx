@@ -10,7 +10,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // The showcase landing page is intentionally full-bleed. Dashboard pages
   // keep the constrained reading width below.
-  if (location.pathname === "/") {
+  if (location.pathname === "/" || location.pathname === "/showcase") {
     return <>{children}</>;
   }
 

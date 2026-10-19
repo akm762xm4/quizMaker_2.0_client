@@ -13,6 +13,7 @@ import { Requests } from "../features/approveRequest/Requests";
 import QuizAttempt from "../Components/student/QuizAttempt";
 import { ProtectedRoute } from "../Components/ProtectedRoute";
 import { AdminDashboard, FacultyDashboard, StudentDashboard } from "../Components/Dashboard";
+import { Showcase } from "../Components/Showcase";
 
 const Routing = () => {
   const location = useLocation();
@@ -21,6 +22,7 @@ const Routing = () => {
       <Route path="/">
         <Route index={true} path="" element={<Auth />} />
       </Route>
+      <Route path="/showcase" element={<Showcase />} />
       <Route element={<ProtectedRoute roles={["admin"]} />}>
       <Route path="/admin/">
         <Route path="" index={true} element={<AdminDashboard />} />

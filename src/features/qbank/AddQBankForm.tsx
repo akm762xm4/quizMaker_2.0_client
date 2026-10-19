@@ -55,7 +55,7 @@ export const AddQBankForm: React.FC<AddQBankFormProps> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-4 bg-highlight/40 p-6 rounded-lg shadow-md">
+      <div className="surface-card flex w-full flex-col gap-5 border-0 bg-slate-50 p-5 shadow-none dark:bg-slate-950 sm:p-6">
         <div className="form-group">
           <label htmlFor="title" className="form-label">
             Title
@@ -67,7 +67,7 @@ export const AddQBankForm: React.FC<AddQBankFormProps> = ({
             {...register("title")}
           />
         </div>
-        <div className="ml-auto flex gap-2 text-sm">
+        <div className="flex flex-col-reverse gap-2 pt-2 text-sm sm:flex-row sm:justify-end">
           <button className="btn-outline" type="reset">
             Reset
           </button>

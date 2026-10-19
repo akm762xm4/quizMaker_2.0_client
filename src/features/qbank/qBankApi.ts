@@ -26,6 +26,14 @@ const qBankApi = api.injectEndpoints({
       }),
       invalidatesTags: ["qBank"],
     }),
+    importQuestionBank: builder.mutation<ImportQuestionBankResponse, File>({
+      query: (file) => {
+        const body = new FormData();
+        body.append("file", file);
+        return { url: "/qbank/import-document", method: "POST", body };
+      },
+      invalidatesTags: ["qBank", "question"],
+    }),
     renameQBank: builder.mutation({
       query: ({ qBankId, body }) => ({
         url: `/qbank/${qBankId}`,
@@ -89,6 +97,12 @@ export interface AddQBankFormI {
   title: string;
 }
 
+export interface ImportQuestionBankResponse {
+  status: "success" | "no_mcqs";
+  message?: string;
+  questionBank?: IQBank;
+}
+
 export interface QuestionI {
   _id: string;
   text: string;
@@ -113,6 +127,7 @@ export const {
   useGetQBankByIdQuery,
   useDeleteQBankMutation,
   useCreateQBankMutation,
+  useImportQuestionBankMutation,
   useRenameQBankMutation,
   // useGetQuestionsQuery,
   useAddQuestionMutation,

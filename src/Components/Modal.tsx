@@ -27,27 +27,29 @@ export const Modal: React.FC<AddModalProps> = ({ title, setIsOpen, child }) => {
 
       {/* Modal */}
       <div
-        className="fixed z-50 top-1/2 left-1/2 w-[95%] max-w-sm sm:max-w-md -translate-x-1/2 -translate-y-1/2
-                   bg-white border border-slate-200 rounded-xl shadow-xl p-4 sm:p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        className="fixed left-1/2 top-1/2 z-50 flex max-h-[min(90dvh,44rem)] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-950 shadow-2xl shadow-slate-950/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50"
       >
-        {/* Close Button */}
-        <button
-          title="Close"
-          onClick={() => setIsOpen(false)}
-          className="absolute top-3 right-3 text-slate-500 hover:text-black transition"
-        >
-          <AiOutlineClose size={20} />
-        </button>
-
-        {/* Title */}
-        <div className="text-lg sm:text-xl font-semibold text-slate-900 mb-4">
-          {title}
+        <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700 sm:px-6">
+          <h2 id="modal-title" className="text-lg font-bold tracking-tight">
+            {title}
+          </h2>
+          <button
+            title="Close"
+            aria-label="Close dialog"
+            onClick={() => setIsOpen(false)}
+            className="grid h-10 w-10 place-items-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent dark:hover:bg-slate-800 dark:hover:text-white"
+          >
+            <AiOutlineClose size={20} />
+          </button>
         </div>
-
-        {/* Content */}
-        <div>{child}</div>
+        <div className="min-h-0 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+          {child}
+        </div>
       </div>
     </>,
-    document.querySelector(".portalModalDiv") as HTMLDivElement
+    document.querySelector(".portalModalDiv") as HTMLDivElement,
   );
 };

@@ -10,7 +10,7 @@ import { Modal } from "../../Components/Modal";
 import { QuestionForm } from "./QuestionForm";
 import { DeleteForm } from "../user/DeleteForm";
 import { toast } from "sonner";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { FiCheck } from "react-icons/fi";
 
 interface QuestionItemProps {
@@ -31,7 +31,7 @@ export const QuestionItem: React.FC<QuestionItemProps> = ({ question, qBankId })
       toast.success("Question updated.");
       setIsEditOpen(false);
     } catch (error) {
-      toast.error((error as ErrorI)?.data?.error || "Failed to update question.");
+      toast.error(getApiErrorMessage(error, "Failed to update question."));
     }
   };
 

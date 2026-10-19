@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Local env overrides (machine-specific values such as the dev API URL).
+# .env, .env.development and .env.example are intentionally tracked.
+.env.local
+.env.*.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -2,10 +2,9 @@ import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginCredentials, useLoginMutation } from "./authApi";
 import { toast } from "sonner";
-import { setToken } from "../../utils/localStorage";
+import { getUser, setToken } from "../../utils/localStorage";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import { ErrorI } from "../../types";
+import { getApiErrorMessage } from "../../utils/apiError";
 import { DemoAccount } from "./demoAccounts";
 
 export const LoginForm = ({ demoAccount }: { demoAccount?: DemoAccount }) => {
@@ -27,10 +26,29 @@ export const LoginForm = ({ demoAccount }: { demoAccount?: DemoAccount }) => {
 
     try {
       const res = await login(values).unwrap();
+
+      if (!res?.token) {
+        toast.error("Login failed: the server did not return a session token.");
+        return;
+      }
+
+      if (!setToken(res.token)) {
+        toast.error(
+          "Login succeeded, but this browser is blocking local storage, so the session can't be saved."
+        );
+        return;
+      }
+
+      const user = getUser();
+      if (!user) {
+        toast.error(
+          "Login succeeded, but the session token could not be read. Please try again."
+        );
+        return;
+      }
+
       toast.success("Logged in!");
-      setToken(res?.token);
-      const role = jwtDecode<{ role: string }>(res.token)?.role;
-      switch (role) {
+      switch (user.role) {
         case "admin":
           navigate("/admin");
           break;
@@ -42,8 +60,9 @@ export const LoginForm = ({ demoAccount }: { demoAccount?: DemoAccount }) => {
           break;
       }
     } catch (error) {
-      const err = error as ErrorI;
-      toast.error(err.data.error);
+      toast.error(
+        getApiErrorMessage(error, "Login failed. Please check your credentials.")
+      );
     }
   };
 
@@ -59,6 +78,10 @@ export const LoginForm = ({ demoAccount }: { demoAccount?: DemoAccount }) => {
             placeholder="Enter your username"
             className="form-input"
             autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="next"
             {...register("username")}
           />
         </div>
@@ -73,6 +96,10 @@ export const LoginForm = ({ demoAccount }: { demoAccount?: DemoAccount }) => {
             placeholder="Enter your password"
             className="form-input"
             autoComplete="current-password"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            enterKeyHint="go"
             {...register("password")}
           />
         </div>

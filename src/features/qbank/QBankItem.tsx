@@ -34,21 +34,21 @@ export const QBankItem: React.FC<QBankItemProps> = ({ qBank }) => {
 
         <div className="flex items-start justify-between gap-3">
           {/* Icon + info */}
-          <div className="flex min-w-0 items-center gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300">
               <FiBookOpen aria-hidden="true" size={20} />
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               {isFaculty ? (
                 <button
                   type="button"
                   onClick={() => navigate(`${qBank._id}`)}
-                  className="truncate text-left font-bold hover:text-violet-600 dark:hover:text-violet-300 transition"
+                  className="block max-w-full truncate text-left font-bold transition hover:text-violet-600 dark:hover:text-violet-300"
                 >
                   {qBank.title}
                 </button>
               ) : (
-                <p className="truncate font-bold">{qBank.title}</p>
+                  <p className="block max-w-full truncate font-bold">{qBank.title}</p>
               )}
               <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 by {qBank?.createdBy?.username}

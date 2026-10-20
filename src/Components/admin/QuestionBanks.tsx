@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { ErrorI } from "../../types";
 
 export const QuestionBanks = () => {
-  const { data: qBanks, isLoading, isFetching } = useGetAllQBanksQuery();
+  const { data: qBanks, isLoading, isFetching, refetch } = useGetAllQBanksQuery();
   const [filteredQBanks, setFilteredQBanks] = useState<IQBank[] | undefined>();
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [term, setTerm] = useState("");
@@ -31,6 +31,7 @@ export const QuestionBanks = () => {
     }
     try {
       const response = await importQuestionBank(file).unwrap();
+      await refetch();
       if (response.status === "no_mcqs") toast.info(response.message);
       else toast.success(`Created question bank “${response.questionBank?.title}” with ${response.questionBank?.questions.length} questions.`);
     } catch (error) {
